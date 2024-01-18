@@ -9,16 +9,16 @@ pi = pigpio.pi()
 pi.set_mode(rc_pin, pigpio.INPUT)
 
 try:
-    print("Reading PWM signal from RC controller...")
+    print("Reading PWM signals from RC controller...")
 
-    for _ in range(10):  # 10번 반복
+    while True:
         pulse_width = pi.get_servo_pulsewidth(rc_pin, 10)  # 최근 10개의 샘플을 사용하여 중간값 계산
 
         if pulse_width > 0:
-            # 10번 채널 값 출력
+            # 10채널 값 출력
             print("Channel 10 PWM:", pulse_width)
 
-        time.sleep(0.5)
+        time.sleep(0.1)
 
 except KeyboardInterrupt:
     # 프로그램 종료 시 GPIO 리소스 해제
