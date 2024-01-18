@@ -6,7 +6,10 @@ rc_pin = 14  # RC 조종기 신호 핀 번호
 
 # GPIO 설정
 pi = pigpio.pi()
-pi.set_mode(rc_pin, pigpio.INPUT)
+
+if not pi.connected:
+    print("Could not connect to pigpio. Make sure pigpiod is running.")
+    exit()
 
 try:
     print("Reading PWM signals from RC controller...")
@@ -15,7 +18,7 @@ try:
         pulse_width = pi.get_servo_pulsewidth(rc_pin, 10)  # 최근 10개의 샘플을 사용하여 중간값 계산
 
         if pulse_width > 0:
-            # 10채널 값 출력
+            # 10번 채널 값 출력
             print("Channel 10 PWM:", pulse_width)
 
         time.sleep(0.1)
