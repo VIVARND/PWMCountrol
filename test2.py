@@ -23,4 +23,4 @@ try:
 except KeyboardInterrupt:
     # 프로그램 종료 시 GPIO 리소스 해제
     GPIO.cleanup()
-    print("Program terminated.")
+    print("Program terminated.")    print("Program terminated.")
