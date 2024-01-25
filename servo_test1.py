@@ -15,7 +15,7 @@ def set_servo_angle(angle):
     target_angle = angle
     step = 1 if target_angle > current_angle else -1
     
-    for a in range(current_angle, target_angle, step):
+    for a in range(int(current_angle), int(target_angle), step):
         pulse_width = (a / 180.0) * (2.5 - 0.5) + 0.5
         duty_cycle = pulse_width * 100 / 20
         pi.set_servo_pulsewidth(servo_pin, int(duty_cycle * 1000))  # 마이크로초 단위로 변환
