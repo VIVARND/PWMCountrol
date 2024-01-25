@@ -35,7 +35,8 @@ def pwm_callback(channel):
         print("현재 서보모터 각도: {:.2f}도".format(current_angle))
 
 def get_current_servo_angle():
-    duty_cycle = pwm.ChangeDutyCycle(0)  # ChangeDutyCycle을 0으로 설정하면 현재의 듀티 사이클을 가져옵니다.
+    pwm.ChangeDutyCycle(0)  # ChangeDutyCycle을 0으로 설정하면 현재의 듀티 사이클을 가져옵니다.
+    duty_cycle = pwm.start  # 수정된 부분
     pulse_width = (duty_cycle / 100.0) * 20.0
     angle = (pulse_width - 0.5) / (2.5 - 0.5) * 180.0
     return angle
