@@ -6,6 +6,10 @@ servo_pin = 24  # 서보모터의 신호선이 연결된 GPIO 핀
 
 pi = pigpio.pi()
 
+# 서보 모터로 사용할 GPIO 핀 설정
+pi.set_servo_pulsewidth(servo_pin, 0)
+time.sleep(1)  # 초기화를 위해 충분한 대기 시간
+
 def set_servo_angle(angle):
     current_angle = get_current_servo_angle()
     target_angle = angle
@@ -52,5 +56,6 @@ except KeyboardInterrupt:
 
 finally:
     cb.cancel()
+    pi.set_servo_pulsewidth(servo_pin, 0)  # 서보 모터의 PWM 신호를 중단합니다.
     pi.stop()
     print("GPIO 정리 완료. 프로그램 종료.")
