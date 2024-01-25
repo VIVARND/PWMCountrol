@@ -1,7 +1,6 @@
 import time
 import pigpio
 
-pwm_pin = 18  # PWM 신호를 읽을 GPIO 핀 (라즈베리파이 3B/3B+/4B의 경우 GPIO18)
 servo_pin = 24  # 서보모터의 신호선이 연결된 GPIO 핀
 
 pi = pigpio.pi()
@@ -11,9 +10,13 @@ pi.set_servo_pulsewidth(servo_pin, 0)
 time.sleep(1)  # 초기화를 위해 충분한 대기 시간
 
 def set_servo_angle(angle):
-    pulse_width = (angle / 180.0) * (2.5 - 0.5) + 0.5
-    duty_cycle = pulse_width * 100 / 20
-    pi.set_servo_pulsewidth(servo_pin, int(duty_cycle * 1000))  # 마이크로초 단위로 변환
+    if angle < 0:
+        angle = 0
+    elif angle > 180:
+        angle = 180
+
+    pulse_width = (angle / 180.0) * (2500 - 500) + 500
+    pi.set_servo_pulsewidth(servo_pin, int(pulse_width))
     time.sleep(0.01)  # 부드러운 이동을 위한 대기 시간
 
 def pwm_callback(channel, level, tick):
@@ -32,15 +35,11 @@ def pwm_callback(channel, level, tick):
         print("현재 서보모터 각도: {:.2f}도".format(current_angle))
 
 def get_current_servo_angle():
-    duty_cycle = pi.get_servo_pulsewidth(servo_pin) / 1000.0  # 밀리초를 초로 변환
-    pulse_width = (duty_cycle / 20.0) + 0.5
-    angle = pulse_width * 180.0
+    pulse_width = pi.get_servo_pulsewidth(servo_pin)
+    angle = (pulse_width - 500) / (2500 - 500) * 180.0
     return angle
 
-pi.set_mode(pwm_pin, pigpio.INPUT)
-pi.set_mode(servo_pin, pigpio.OUTPUT)
-
-cb = pi.callback(pwm_pin, pigpio.EITHER_EDGE, pwm_callback)
+cb = pi.callback(18, pigpio.EITHER_EDGE, pwm_callback)
 
 try:
     while True:
