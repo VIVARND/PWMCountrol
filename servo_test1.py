@@ -1,8 +1,10 @@
 import time
-import RPi.GPIO as GPIO
+import pigpio
 
 pwm_pin = 18  # PWM 신호를 읽을 GPIO 핀 (라즈베리파이 3B/3B+/4B의 경우 GPIO18)
 servo_pin = 24  # 서보모터의 신호선이 연결된 GPIO 핀
+
+pi = pigpio.pi()
 
 def set_servo_angle(angle):
     current_angle = get_current_servo_angle()
@@ -12,15 +14,11 @@ def set_servo_angle(angle):
     for a in range(current_angle, target_angle, step):
         pulse_width = (a / 180.0) * (2.5 - 0.5) + 0.5
         duty_cycle = pulse_width * 100 / 20
-        pwm.ChangeDutyCycle(duty_cycle)
+        pi.set_servo_pulsewidth(servo_pin, int(duty_cycle * 1000))  # 마이크로초 단위로 변환
         time.sleep(0.01)  # 부드러운 이동을 위한 대기 시간
 
-def pwm_callback(channel):
-    pulse_start = time.time()
-    pulse_end = pulse_start  # pulse_end 초기화
-    while GPIO.input(channel) == GPIO.HIGH:
-        pulse_end = time.time()
-    pulse_duration = pulse_end - pulse_start
+def pwm_callback(channel, level, tick):
+    pulse_duration = (tick / 1000000.0)  # 마이크로초를 초로 변환
     if pulse_duration != 0.0:
         print("채널 10 PWM 값: {:.4f}".format(pulse_duration)[2:])  # 소수점 이하 3자리부터 4자리까지 출력
 
@@ -35,20 +33,15 @@ def pwm_callback(channel):
         print("현재 서보모터 각도: {:.2f}도".format(current_angle))
 
 def get_current_servo_angle():
-    pwm.ChangeDutyCycle(0)  # ChangeDutyCycle을 0으로 설정하면 현재의 듀티 사이클을 가져옵니다.
-    duty_cycle = pwm.start  # 수정된 부분
-    pulse_width = (duty_cycle / 100.0) * 20.0
-    angle = (pulse_width - 0.5) / (2.5 - 0.5) * 180.0
+    duty_cycle = pi.get_servo_pulsewidth(servo_pin) / 1000.0  # 밀리초를 초로 변환
+    pulse_width = (duty_cycle / 20.0) + 0.5
+    angle = pulse_width * 180.0
     return angle
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(pwm_pin, GPIO.IN)
-GPIO.setup(servo_pin, GPIO.OUT)
+pi.set_mode(pwm_pin, pigpio.INPUT)
+pi.set_mode(servo_pin, pigpio.OUTPUT)
 
-pwm = GPIO.PWM(servo_pin, 50)  # 주파수는 50Hz로 설정
-pwm.start(7.5)  # 중립 위치
-
-GPIO.add_event_detect(pwm_pin, GPIO.BOTH, callback=pwm_callback)
+cb = pi.callback(pwm_pin, pigpio.EITHER_EDGE, pwm_callback)
 
 try:
     while True:
@@ -58,6 +51,6 @@ except KeyboardInterrupt:
     pass
 
 finally:
-    pwm.stop()
-    GPIO.cleanup()
+    cb.cancel()
+    pi.stop()
     print("GPIO 정리 완료. 프로그램 종료.")
