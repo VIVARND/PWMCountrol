@@ -9,12 +9,13 @@ servo_pin = 24  # 서보 모터 신호 핀
 
 # 서보 모터 각도에 따른 PWM 신호 범위
 angle_to_pwm_range = {
-    10: (0.0011, 0.0090),
+    10: (0.0009, 0.0011),  # 수정된 부분
     170: (0.0017, 0.0019),
 }
 
 # GPIO 초기화
 GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)  # GPIO 경고 비활성화
 GPIO.setup(pwm_pin, GPIO.IN)
 GPIO.setup(servo_pin, GPIO.OUT)
 
@@ -23,7 +24,7 @@ pwm = GPIO.PWM(pwm_pin, 50)  # 50Hz 주파수 설정
 
 # 서보 모터를 특정 각도로 회전하는 함수
 def set_servo_angle(angle):
-    pwm_range = angle_to_pwm_range.get(angle, (0.0011, 0.0019))
+    pwm_range = angle_to_pwm_range.get(angle, (0.0009, 0.0011))  # 수정된 부분
     pwm_value = sum(pwm_range) / 2  # PWM 값의 중간값 사용
     pwm.ChangeDutyCycle(pwm_value)
     print(f"서보 모터 각도: {angle}도, PWM 값: {pwm_value}")
@@ -36,7 +37,7 @@ def read_pwm(serial_port):
             channel, pwm_value = struct.unpack('<BB', data)
             pwm_value_normalized = pwm_value / 255.0  # PWM 값을 0.0에서 1.0으로 정규화
 
-            if 0.0011 <= pwm_value_normalized <= 0.0090:
+            if 0.0009 <= pwm_value_normalized <= 0.0011:  # 수정된 부분
                 set_servo_angle(10)
             elif 0.0019 >= pwm_value_normalized > 0.0017:
                 set_servo_angle(170)
