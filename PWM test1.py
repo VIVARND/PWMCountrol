@@ -1,56 +1,31 @@
-import RPi.GPIO as GPIO
 import time
+import pigpio
 
-# GPIO 핀 번호 설정
-input_pin = 18  # PWM 입력 핀 (라즈베리 파이의 GPIO 핀 번호에 따라 수정)
+ppm_pin = 18  # PPM 신호를 읽을 GPIO 핀 (라즈베리파이 3B/3B+/4B의 경우 GPIO18)
 
-# 10번 채널에 해당하는 변수
-channel_10_pin = 10
+def ppm_callback(gpio, level, tick):
+    print("PPM 신호 감지:", level, "Tick:", tick)
 
-# GPIO 초기화
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(input_pin, GPIO.IN)
-GPIO.setup(channel_10_pin, GPIO.OUT)
+pi = pigpio.pi()
 
-# PWM 객체 생성
-channel_10_pwm = GPIO.PWM(channel_10_pin, 50)  # 주파수 50Hz
+if not pi.connected:
+    print("GPIO 초기화 실패. 프로그램을 종료합니다.")
+    exit()
 
-def read_pwm():
-    start_time = time.time()
+# PPM 신호를 읽기 위한 GPIO 핀 설정
+pi.set_mode(ppm_pin, pigpio.INPUT)
+pi.set_pull_up_down(ppm_pin, pigpio.PUD_UP)
 
-    # PWM 신호의 rising edge 기다리기
-    while GPIO.input(input_pin) == GPIO.LOW:
-        pass
-
-    # rising edge 이후, falling edge 까지의 시간 측정
-    while GPIO.input(input_pin) == GPIO.HIGH:
-        pass
-    pulse_duration = time.time() - start_time
-
-    return pulse_duration
+# PPM 신호 변화 감지 콜백 설정
+pi.callback(ppm_pin, pigpio.EITHER_EDGE, ppm_callback)
 
 try:
-    # PWM 시작
-    channel_10_pwm.start(0)
-
-    print("10번 채널 PWM 읽기를 시작합니다. Ctrl+C를 눌러서 종료하세요.")
     while True:
-        # PWM 신호 읽기
-        pwm_value = read_pwm()
-
-        # PWM 값을 10번 채널에 적용
-        duty_cycle = (pwm_value / 0.02) + 3
-        channel_10_pwm.ChangeDutyCycle(duty_cycle)
-
-        # 10번 채널 PWM 신호 출력
-        print(f"10번 채널 PWM Value: {pwm_value}")
-
-        time.sleep(0.5)  # 0.5초 대기
+        time.sleep(0.5)
 
 except KeyboardInterrupt:
-    print("사용자에 의해 프로그램이 종료되었습니다.")
+    pass
 
 finally:
-    # 종료 시 PWM 및 GPIO 정리
-    channel_10_pwm.stop()
-    GPIO.cleanup()
+    pi.stop()
+    print("GPIO 정리 완료. 프로그램 종료.")
