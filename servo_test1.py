@@ -25,6 +25,15 @@ def pwm_callback(channel):
         else:
             set_servo_angle(90)
 
+        current_angle = get_current_servo_angle()
+        print("현재 서보모터 각도: {:.2f}도".format(current_angle))
+
+def get_current_servo_angle():
+    duty_cycle = pwm.start
+    pulse_width = (duty_cycle / 100.0) * 20.0
+    angle = (pulse_width - 0.5) / (2.5 - 0.5) * 180.0
+    return angle
+
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(pwm_pin, GPIO.IN)
 GPIO.setup(servo_pin, GPIO.OUT)
