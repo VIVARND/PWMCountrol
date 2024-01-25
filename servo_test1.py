@@ -5,9 +5,15 @@ pwm_pin = 18  # PWM 신호를 읽을 GPIO 핀 (라즈베리파이 3B/3B+/4B의 �
 servo_pin = 24  # 서보모터의 신호선이 연결된 GPIO 핀
 
 def set_servo_angle(angle):
-    pulse_width = (angle / 180.0) * (2.5 - 0.5) + 0.5
-    duty_cycle = pulse_width * 100 / 20
-    pwm.ChangeDutyCycle(duty_cycle)
+    current_angle = get_current_servo_angle()
+    target_angle = angle
+    step = 1 if target_angle > current_angle else -1
+    
+    for a in range(current_angle, target_angle, step):
+        pulse_width = (a / 180.0) * (2.5 - 0.5) + 0.5
+        duty_cycle = pulse_width * 100 / 20
+        pwm.ChangeDutyCycle(duty_cycle)
+        time.sleep(0.01)  # 부드러운 이동을 위한 대기 시간
 
 def pwm_callback(channel):
     pulse_start = time.time()
@@ -29,7 +35,7 @@ def pwm_callback(channel):
         print("현재 서보모터 각도: {:.2f}도".format(current_angle))
 
 def get_current_servo_angle():
-    duty_cycle = pwm.start
+    duty_cycle = pwm.get_duty_cycle()
     pulse_width = (duty_cycle / 100.0) * 20.0
     angle = (pulse_width - 0.5) / (2.5 - 0.5) * 180.0
     return angle
