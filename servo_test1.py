@@ -11,24 +11,19 @@ pi.set_servo_pulsewidth(servo_pin, 0)
 time.sleep(1)  # 초기화를 위해 충분한 대기 시간
 
 def set_servo_angle(angle):
-    current_angle = get_current_servo_angle()
-    target_angle = angle
-    step = 1 if target_angle > current_angle else -1
-    
-    for a in range(int(current_angle), int(target_angle), step):
-        pulse_width = (a / 180.0) * (2.5 - 0.5) + 0.5
-        duty_cycle = pulse_width * 100 / 20
-        pi.set_servo_pulsewidth(servo_pin, int(duty_cycle * 1000))  # 마이크로초 단위로 변환
-        time.sleep(0.01)  # 부드러운 이동을 위한 대기 시간
+    pulse_width = (angle / 180.0) * (2.5 - 0.5) + 0.5
+    duty_cycle = pulse_width * 100 / 20
+    pi.set_servo_pulsewidth(servo_pin, int(duty_cycle * 1000))  # 마이크로초 단위로 변환
+    time.sleep(0.01)  # 부드러운 이동을 위한 대기 시간
 
 def pwm_callback(channel, level, tick):
     pulse_duration = (tick / 1000000.0)  # 마이크로초를 초로 변환
     if pulse_duration != 0.0:
-        print("채널 10 PWM 값: {:.4f}".format(pulse_duration)[2:])  # 소수점 이하 3자리부터 4자리까지 출력
+        print("채널 10 PWM 값: {:.4f}".format(pulse_duration))  # 소수점 이하 4자리까지 출력
 
-        if 0.0011 >= pulse_duration >= 0.0090:
+        if 0.0009 >= pulse_duration >= 0.0007:
             set_servo_angle(10)
-        elif 0.0019 >= pulse_duration >= 0.0017:
+        elif 0.0011 >= pulse_duration > 0.0009:
             set_servo_angle(170)
         else:
             set_servo_angle(90)
