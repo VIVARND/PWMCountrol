@@ -9,7 +9,8 @@ def pwm_callback(channel):
     while GPIO.input(channel) == GPIO.HIGH:
         pulse_end = time.time()
     pulse_duration = pulse_end - pulse_start
-    print("채널 10 PWM 값: {:.4f}".format(pulse_duration))  # 소수점 이하 4자리까지 출력
+    if pulse_duration != 0.0:
+        print("채널 10 PWM 값: {:.2f}".format(pulse_duration))  # 소수점 이하 2자리까지 출력
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(pwm_pin, GPIO.IN)
