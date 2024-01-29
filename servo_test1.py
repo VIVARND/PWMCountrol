@@ -5,16 +5,16 @@ pwm_pin = 18  # PWM 신호를 읽을 GPIO 핀 (라즈베리파이 3B/3B+/4B의 �
 servo_pin = 24  # 서보 모터를 제어할 GPIO 핀 (라즈베리파이에 연결된 실제 핀 번호에 따라 수정하세요)
 
 def set_servo_angle(angle):
-    if angle == 10:
-        pwm_value = 0.0090
-    elif angle == 40:
-        pwm_value = 0.0013
-    elif angle == 90:
-        pwm_value = 0.0017
+    if 0.0007 <= angle <= 0.0012:
+        angle = 10
+    elif 0.0013 <= angle <= 0.0015:
+        angle = 40
+    elif 0.0016 <= angle <= 0.0021:
+        angle = 90
     else:
-        pwm_value = 0
+        angle = 0
     
-    pwm.ChangeDutyCycle(pwm_value * 100)
+    pwm.ChangeDutyCycle(angle * 100)
     print("현재 서보모터 각도:", angle)
 
 def pwm_callback(channel):
@@ -24,15 +24,8 @@ def pwm_callback(channel):
         pulse_end = time.time()
     pulse_duration = pulse_end - pulse_start
     if pulse_duration != 0.0:
-        if 0.0090 <= pulse_duration <= 0.0011:
-            set_servo_angle(10)
-        elif 0.0012 <= pulse_duration <= 0.0014:
-            set_servo_angle(40)
-        elif 0.0015 <= pulse_duration <= 0.0019:
-            set_servo_angle(90)
-        else:
-            set_servo_angle(0)
-    print("PWM 값:", round(pulse_duration, 4))  # PWM 값 출력
+        set_servo_angle(pulse_duration)
+    print("PWM 값:", round(pulse_duration, 3))  # 소수점 3자리까지 출력
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)  # 경고 메시지 비활성화
