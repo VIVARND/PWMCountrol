@@ -1,8 +1,8 @@
 import time
 import RPi.GPIO as GPIO
 
-pwm_pin = 18  # PWM 신호를 읽을 GPIO 핀
-servo_pin = 24  # 서보모터를 제어할 GPIO 핀
+pwm_pin = 18  # PWM 신호를 읽을 GPIO 핀 (라즈베리파이 3B/3B+/4B의 경우 GPIO18)
+servo_pin = 24  # 서보 모터를 제어할 GPIO 핀 (라즈베리파이에 연결된 실제 핀 번호에 따라 수정하세요)
 
 def set_servo_angle(angle):
     if angle == 10:
@@ -24,22 +24,23 @@ def pwm_callback(channel):
         pulse_end = time.time()
     pulse_duration = pulse_end - pulse_start
     if pulse_duration != 0.0:
-        if 0.0007 <= pulse_duration <= 0.0012:
+        if 0.0090 <= pulse_duration <= 0.0011:
             set_servo_angle(10)
-        elif 0.0013 <= pulse_duration <= 0.0015:
+        elif 0.0012 <= pulse_duration <= 0.0014:
             set_servo_angle(40)
-        elif 0.0016 <= pulse_duration <= 0.0021:
+        elif 0.0015 <= pulse_duration <= 0.0019:
             set_servo_angle(90)
         else:
             set_servo_angle(0)
-    print("PWM 값:", round(pulse_duration, 4))  # 소수점 4자리까지 출력
+    print("PWM 값:", round(pulse_duration, 4))  # PWM 값 출력
+    sys.stdout.flush()  # 표준 출력 버퍼를 플러시하여 즉시 출력되도록 합니다.
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)  # 경고 메시지 비활성화
-GPIO.setup(pwm_pin, GPIO.IN)  # PWM 핀을 입력으로 설정
-GPIO.setup(servo_pin, GPIO.OUT)  # 서보모터 핀을 출력으로 설정
+GPIO.setup(pwm_pin, GPIO.OUT)  # PWM 핀을 출력으로 설정
+GPIO.setup(servo_pin, GPIO.OUT)  # 서보 모터 핀을 출력으로 설정
 
-pwm = GPIO.PWM(servo_pin, 50)  # PWM 객체를 생성
+pwm = GPIO.PWM(pwm_pin, 50)  # PWM 객체를 생성
 pwm.start(0)  # PWM 신호를 초기화
 
 GPIO.setup(pwm_pin, GPIO.IN)  # PWM 핀을 입력으로 설정
@@ -48,6 +49,7 @@ GPIO.add_event_detect(pwm_pin, GPIO.BOTH, callback=pwm_callback)
 try:
     while True:
         time.sleep(0.5)  # 0.5초마다 실행되도록 설정
+        sys.stdout.flush()  # 표준 출력 버퍼를 플러시하여 즉시 출력되도록 합니다.
 except KeyboardInterrupt:
     pass
 finally:
