@@ -33,7 +33,7 @@ def pwm_callback(channel):
             set_servo_angle(0)
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(pwm_pin, GPIO.OUT)  # PWM 신호를 읽을 핀을 출력으로 설정
+GPIO.setup(pwm_pin, GPIO.IN)  # PWM 핀을 입력으로 설정
 GPIO.setup(servo_pin, GPIO.OUT)  # 서보 모터 핀을 출력으로 설정
 
 pwm = GPIO.PWM(pwm_pin, 50)  # PWM 객체를 생성
