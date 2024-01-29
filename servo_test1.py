@@ -1,5 +1,6 @@
 import time
 import RPi.GPIO as GPIO
+import sys  # sys 모듈 임포트 추가
 
 pwm_pin = 18  # PWM 신호를 읽을 GPIO 핀 (라즈베리파이 3B/3B+/4B의 경우 GPIO18)
 servo_pin = 24  # 서보 모터를 제어할 GPIO 핀 (라즈베리파이에 연결된 실제 핀 번호에 따라 수정하세요)
@@ -16,6 +17,7 @@ def set_servo_angle(angle):
     
     pwm.ChangeDutyCycle(pwm_value * 100)
     print("현재 서보모터 각도:", angle)
+    sys.stdout.flush()  # 표준 출력 버퍼를 플러시하여 즉시 출력되도록 합니다.
 
 def pwm_callback(channel):
     pulse_start = time.time()
@@ -49,7 +51,6 @@ GPIO.add_event_detect(pwm_pin, GPIO.BOTH, callback=pwm_callback)
 try:
     while True:
         time.sleep(0.5)  # 0.5초마다 실행되도록 설정
-        sys.stdout.flush()  # 표준 출력 버퍼를 플러시하여 즉시 출력되도록 합니다.
 except KeyboardInterrupt:
     pass
 finally:
