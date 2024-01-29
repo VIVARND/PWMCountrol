@@ -1,5 +1,6 @@
 import time
 import RPi.GPIO as GPIO
+import sys
 
 pwm_pin = 18  # PWM 신호를 읽을 GPIO 핀 (라즈베리파이 3B/3B+/4B의 경우 GPIO18)
 servo_pin = 24  # 서보 모터를 제어할 GPIO 핀 (라즈베리파이에 연결된 실제 핀 번호에 따라 수정하세요)
