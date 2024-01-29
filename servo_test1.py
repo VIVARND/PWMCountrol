@@ -40,6 +40,7 @@ GPIO.setup(servo_pin, GPIO.OUT)  # 서보 모터 핀을 출력으로 설정
 pwm = GPIO.PWM(pwm_pin, 50)  # PWM 객체를 생성
 pwm.start(0)  # PWM 신호를 초기화
 
+GPIO.setup(pwm_pin, GPIO.IN)  # PWM 핀을 입력으로 설정
 GPIO.add_event_detect(pwm_pin, GPIO.BOTH, callback=pwm_callback)
 
 try:
