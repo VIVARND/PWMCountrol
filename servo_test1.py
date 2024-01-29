@@ -15,6 +15,7 @@ def set_servo_angle(angle):
         pwm_value = 0
     
     pwm.ChangeDutyCycle(pwm_value * 100)
+    print("현재 서보모터 각도:", angle)
 
 def pwm_callback(channel):
     pulse_start = time.time()
@@ -31,6 +32,7 @@ def pwm_callback(channel):
             set_servo_angle(90)
         else:
             set_servo_angle(0)
+    print("PWM 값:", round(pulse_duration, 4))  # PWM 값 출력
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)  # 경고 메시지 비활성화
@@ -45,7 +47,7 @@ GPIO.add_event_detect(pwm_pin, GPIO.BOTH, callback=pwm_callback)
 
 try:
     while True:
-        time.sleep(0.1)
+        time.sleep(0.5)  # 0.5초마다 실행되도록 설정
 except KeyboardInterrupt:
     pass
 finally:
