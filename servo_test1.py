@@ -36,10 +36,10 @@ def pwm_callback(channel):
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
-GPIO.setup(pwm_pin, GPIO.OUT)
+GPIO.setup(pwm_pin, GPIO.IN)  # PWM 핀을 입력으로 설정
 GPIO.setup(servo_pin, GPIO.OUT)
 
-pwm = GPIO.PWM(pwm_pin, 50)
+pwm = GPIO.PWM(servo_pin, 50)  # 서보 모터 PWM 설정
 pwm.start(0)
 
 try:
