@@ -8,7 +8,7 @@ def set_servo_angle(angle):
     if angle == 10:
         pwm_value = 0.0009
     elif angle == 40:
-        pwm_value = 0.0013
+        pwm_value = 0.0012
     elif angle == 90:
         pwm_value = 0.0019
     else:
@@ -24,9 +24,9 @@ def pwm_callback(channel):
         pulse_end = time.time()
     pulse_duration = pulse_end - pulse_start
     if pulse_duration != 0.0:
-        if 0.0007 <= pulse_duration <= 0.0012:
+        if 0.0007 <= pulse_duration <= 0.0011:
             set_servo_angle(10)
-        elif 0.0013 <= pulse_duration <= 0.0015:
+        elif 0.0012 <= pulse_duration <= 0.0015:
             set_servo_angle(40)
         elif 0.0016 <= pulse_duration <= 0.0021:
             set_servo_angle(90)
