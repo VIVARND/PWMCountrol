@@ -10,7 +10,7 @@ def pwm_callback(channel):
         pulse_end = time.time()
     pulse_duration = pulse_end - pulse_start
     if pulse_duration != 0.0:
-        print("PWM 값:", round(pulse_duration, 4))  # PWM 값 출력
+        print("PWM 값:", round(pulse_duration * 1000000))  # PWM 값 출력 (마이크로초로 변환)
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
