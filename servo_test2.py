@@ -1,11 +1,14 @@
-from gpiozero import PWMInputDevice
+from gpiozero import InputDevice, PWMOutputDevice
 import time
 
 # GPIO 핀 번호 설정
 pwm_pin = 18
 
-# PWMInputDevice 초기화
-pwm_device = PWMInputDevice(pwm_pin)
+# PWMOutputDevice 초기화
+pwm_device = PWMOutputDevice(pwm_pin)
+
+# InputDevice 초기화
+input_device = InputDevice(pwm_pin)
 
 try:
     while True:
@@ -17,6 +20,10 @@ try:
         analog_value = pwm_value * 100.0
         print(f"Analog Value: {analog_value:.2f}")
 
+        # Digital 값 읽기
+        digital_value = input_device.value
+        print(f"Digital Value: {digital_value}")
+
         time.sleep(0.1)
 
 except KeyboardInterrupt:
@@ -25,3 +32,4 @@ except KeyboardInterrupt:
 finally:
     # 정리 작업
     pwm_device.close()
+    input_device.close()
