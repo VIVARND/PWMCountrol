@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 
-# GPIO 핀 번호 설정
+# 사용할 GPIO 핀 번호 설정 (예: 18)
 pwm_pin = 18
 
 # GPIO 설정
