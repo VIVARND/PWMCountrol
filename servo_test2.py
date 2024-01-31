@@ -1,22 +1,21 @@
-import RPi.GPIO as GPIO
+from gpiozero import PWMInputDevice
 import time
 
 # GPIO 핀 번호 설정
 pwm_pin = 18
 
-# GPIO 설정
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(pwm_pin, GPIO.IN)
+# PWMInputDevice 초기화
+pwm_device = PWMInputDevice(pwm_pin)
 
 try:
     while True:
         # PWM 신호 읽기
-        pwm_value = GPIO.input(pwm_pin)
-        print(f"PWM Value: {pwm_value}")
+        pwm_value = pwm_device.value
+        print(f"PWM Value: {pwm_value:.2f}")
 
         # 아날로그 값으로 변환 (0~100)
-        analog_value = (pwm_value / 1.0) * 100.0
-        print(f"Analog Value: {analog_value}")
+        analog_value = pwm_value * 100.0
+        print(f"Analog Value: {analog_value:.2f}")
 
         time.sleep(0.1)
 
@@ -25,4 +24,4 @@ except KeyboardInterrupt:
 
 finally:
     # 정리 작업
-    GPIO.cleanup()
+    pwm_device.close()
