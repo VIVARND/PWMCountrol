@@ -8,10 +8,6 @@ pwm_pin = 18
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(pwm_pin, GPIO.IN)
 
-# PWM 초기화
-pwm = GPIO.PWM(pwm_pin, 50)  # 주파수는 50Hz로 설정
-pwm.start(0)
-
 try:
     while True:
         # PWM 신호 읽기
@@ -29,5 +25,4 @@ except KeyboardInterrupt:
 
 finally:
     # 정리 작업
-    pwm.stop()
     GPIO.cleanup()
