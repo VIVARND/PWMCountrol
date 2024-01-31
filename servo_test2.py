@@ -12,12 +12,9 @@ try:
     while True:
         # PWM 신호 읽기
         pwm_value = GPIO.input(pwm_pin)
-        
-        # 아날로그 값으로 변환 (0~100)
-        analog_value = pwm_value * 100.0
 
-        # 2자리로 출력
-        print(f"PWM Value: {pwm_value}, Analog Value: {analog_value:.2f}")
+        # 디지털 값으로 출력
+        print(f"PWM Value: {pwm_value}")
 
         time.sleep(0.1)
 
