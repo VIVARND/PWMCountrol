@@ -9,6 +9,10 @@ def set_servo_angle(angle):
     pwm.ChangeDutyCycle(pwm_value / 20.0)  # PWM 신호 변경
     print(f"현재 서보모터 각도: {angle}도, PWM 값: {round(pwm_value)}")
 
+def stop_servo():
+    pwm.ChangeDutyCycle(0)  # PWM 신호를 0으로 설정 (서보 모터 정지)
+    print("서보모터 정지")
+
 def pwm_callback(channel):
     pulse_start = time.time()
     pulse_end = pulse_start
@@ -17,15 +21,13 @@ def pwm_callback(channel):
     pulse_duration = pulse_end - pulse_start
     if pulse_duration != 0.0:
         pwm_value = round(pulse_duration * 1000000)  # PWM 값 변환 (마이크로초로 변환)
-        if 900 <= pwm_value <= 1200:
+        print("현재 PWM 값:", pwm_value)  # PWM 값 출력
+        if 900 <= pwm_value <= 1100:
             set_servo_angle(10)
-        elif 1300 <= pwm_value <= 1500:
-            set_servo_angle(50)
         elif 1800 <= pwm_value <= 2000:
-            set_servo_angle(90)
+            set_servo_angle(170)
         else:
-            print("다른 신호가 들어왔습니다. 서보 모터 동작을 잠시 멈춥니다.")
-            time.sleep(1)  # 1초 동안 동작을 멈춥니다.
+            stop_servo()
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -45,4 +47,3 @@ finally:
     pwm.stop()
     GPIO.cleanup()
     print("GPIO 정리 완료. 프로그램 종료.")
-    
