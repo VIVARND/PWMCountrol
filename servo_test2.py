@@ -15,8 +15,8 @@ pwm = GPIO.PWM(servo_pin, 50)  # 주파수는 50Hz로 설정
 pwm.start(0)
 
 try:
-    # 시리얼 포트 설정 (라즈베리파이에 연결된 포트로 수정)
-    ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
+    # 시리얼 포트 설정 (실제로 사용 가능한 포트로 수정)
+    ser = serial.Serial('/dev/YOUR_SERIAL_PORT_NAME', 9600, timeout=1)
 
     while True:
         # 시리얼 데이터 읽기
