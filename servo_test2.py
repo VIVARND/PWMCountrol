@@ -1,17 +1,16 @@
-import RPi.GPIO as GPIO
+import pigpio
 import time
 
 # 사용할 GPIO 핀 번호 설정 (예: 18)
 pwm_pin = 18
 
-# GPIO 설정
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(pwm_pin, GPIO.IN)
+# pigpio 객체 생성
+pi = pigpio.pi()
 
 try:
     while True:
         # PWM 신호 읽기
-        pwm_value = GPIO.input(pwm_pin)
+        pwm_value = pi.read(pwm_pin)
 
         # 디지털 값으로 출력
         print(f"PWM Value: {pwm_value}")
@@ -22,5 +21,5 @@ except KeyboardInterrupt:
     pass
 
 finally:
-    # 정리 작업
-    GPIO.cleanup()
+    # pigpio 객체 정리
+    pi.stop()
