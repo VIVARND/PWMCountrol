@@ -4,12 +4,15 @@ import RPi.GPIO as GPIO
 pwm_pin = 18  # PWM 신호를 읽을 GPIO 핀
 servo_pin = 24  # 서보 모터를 제어할 GPIO 핀
 
+debounce_delay = 0.02  # 디바운싱을 위한 딜레이 설정
+
 def set_servo_angle(angle):
     pwm_value = angle / 180.0 * (2000 - 900) + 900
     pwm.ChangeDutyCycle(pwm_value / 20.0)  # PWM 신호 변경
     print(f"현재 서보모터 각도: {angle}도, PWM 값: {round(pwm_value)}")
 
 def pwm_callback(channel):
+    time.sleep(debounce_delay)  # 디바운싱을 위한 딜레이 추가
     pulse_start = time.time()
     pulse_end = pulse_start
     while GPIO.input(channel) == GPIO.HIGH:
