@@ -13,7 +13,7 @@ try:
         pwm_value = pi.read(pwm_pin)
 
         # 디지털 값으로 출력
-        print(f"PWM Value: {pwm_value}")
+        print(f"PWM Value: {pwm_value:.5f}")
 
         time.sleep(0.1)
 
