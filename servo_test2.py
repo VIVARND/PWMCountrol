@@ -6,18 +6,18 @@ pwm_pin = 18
 
 # GPIO 설정
 GPIO.setmode(GPIO.BCM)
+GPIO.setup(pwm_pin, GPIO.IN)
 
 try:
-    # PWM 신호 읽기
-    GPIO.setup(pwm_pin, GPIO.IN)
-    
     while True:
+        # PWM 신호 읽기
         pwm_value = GPIO.input(pwm_pin)
-        print(f"PWM Value: {pwm_value}")
-
+        
         # 아날로그 값으로 변환 (0~100)
         analog_value = pwm_value * 100.0
-        print(f"Analog Value: {analog_value}")
+
+        # 2자리로 출력
+        print(f"PWM Value: {pwm_value}, Analog Value: {analog_value:.2f}")
 
         time.sleep(0.1)
 
