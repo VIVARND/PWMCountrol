@@ -25,7 +25,7 @@ def pwm_callback(channel):
     # Software Debouncing 적용
     if pulse_duration > debounce_duration:
         last_pulse_time = pulse_start
-        pwm_value = round(pulse_duration * 1000000)  # PWM 값 변환 (마이크로초로 변환)
+        pwm_value = pulse_duration * 1000000  # 정수로 변환하지 않고 소숫점 자리 보존
         print("PWM 값:", pwm_value)
 
         # PWM 값에 따라 서보모터 각도 설정
