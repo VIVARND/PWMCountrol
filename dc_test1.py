@@ -19,11 +19,17 @@ def control_dc_motor(pwm_value):
         print("DC 모터 OFF")
 
 def pwm_callback(channel):
-    pwm_value = round(time.time() * 1000000)  # 현재 시간을 이용하여 PWM 값 계산
-    print("PWM 값:", pwm_value)
+    pulse_start = time.time()
+    pulse_end = pulse_start
+    while GPIO.input(pwm_pin) == GPIO.HIGH:
+        pulse_end = time.time()
+    pulse_duration = pulse_end - pulse_start
+    if pulse_duration != 0.0:
+        pwm_value = round(pulse_duration * 1000000)  # PWM 값 변환 (마이크로초로 변환)
+        print("PWM 값:", pwm_value)
 
-    # PWM 값에 따라 DC 모터 상태 결정
-    control_dc_motor(pwm_value)
+        # PWM 값에 따라 DC 모터 상태 결정
+        control_dc_motor(pwm_value)
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
