@@ -4,10 +4,6 @@ import RPi.GPIO as GPIO
 pwm_pin = 18  # PWM 신호를 읽을 GPIO 핀
 servo_pin = 24  # 서보 모터를 제어할 GPIO 핀
 
-# Software Debouncing 관련 변수
-last_pulse_time = 0
-debounce_duration = 0.05  # 50ms
-
 def set_servo_angle(angle):
     duty_cycle = angle / 18.0 + 2.5  # 각도에 따른 PWM 듀티 사이클 계산
     pwm.ChangeDutyCycle(duty_cycle)
@@ -18,13 +14,12 @@ def stop_servo():
     print("서보모터 정지")
 
 def pwm_callback(channel):
-    global last_pulse_time
     pulse_start = time.time()
-    pulse_duration = pulse_start - last_pulse_time
-
-    # Software Debouncing 적용
-    if pulse_duration > debounce_duration:
-        last_pulse_time = pulse_start
+    pulse_end = pulse_start
+    while GPIO.input(channel) == GPIO.HIGH:
+        pulse_end = time.time()
+    pulse_duration = pulse_end - pulse_start
+    if pulse_duration != 0.0:
         pwm_value = round(pulse_duration * 1000000)  # PWM 값 변환 (마이크로초로 변환)
         print("PWM 값:", pwm_value)
         
