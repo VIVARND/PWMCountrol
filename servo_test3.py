@@ -44,7 +44,7 @@ pwm.start(0)
 try:
     GPIO.add_event_detect(pwm_pin, GPIO.BOTH, callback=pwm_callback)
     while True:
-        time.sleep(0.1)  # 작은 값으로 설정하여 실시간으로 PWM 값을 확인
+        time.sleep(0.9)  # 작은 값으로 설정하여 실시간으로 PWM 값을 확인
 except KeyboardInterrupt:
     pass
 finally:
