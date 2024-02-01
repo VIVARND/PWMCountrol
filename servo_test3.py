@@ -7,6 +7,11 @@ servo_pin = 24  # 서보 모터를 제어할 GPIO 핀
 def set_servo_angle(angle):
     duty_cycle = angle / 18.0 + 2.5  # 각도에 따른 PWM 듀티 사이클 계산
     pwm.ChangeDutyCycle(duty_cycle)
+    print(f"현재 서보모터 각도: {angle}도")
+
+def stop_servo():
+    pwm.ChangeDutyCycle(0)  # PWM 신호를 0으로 설정 (서보 모터 정지)
+    print("서보모터 정지")
 
 def pwm_callback(channel):
     pulse_start = time.time()
@@ -19,9 +24,14 @@ def pwm_callback(channel):
         print("PWM 값:", pwm_value)
         
         # PWM 값에 따라 서보모터 각도 설정
-        if 1000 <= pwm_value <= 2000:
-            angle = (pwm_value - 1000) / 10.0  # 예시 값, 조절이 필요할 수 있음
-            set_servo_angle(angle)
+        if 900 <= pwm_value <= 1100:
+            set_servo_angle(10)
+        elif 1300 <= pwm_value <= 1500:
+            set_servo_angle(50)
+        elif 1700 <= pwm_value <= 2000:
+            set_servo_angle(90)
+        else:
+            stop_servo()
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
