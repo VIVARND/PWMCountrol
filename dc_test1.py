@@ -9,10 +9,6 @@ frequency = 50  # PWM 주파수 (Hz)
 PWM_MIN = 900
 PWM_MAX = 1100
 
-# Software Debouncing 관련 변수
-last_pulse_time = 0
-debounce_duration = 0.1  # 100ms (값에 따라 조절)
-
 def control_dc_motor(pwm_value):
     if PWM_MIN <= pwm_value <= PWM_MAX:
         # PWM 값에 따라 모터 상태 결정
@@ -23,13 +19,12 @@ def control_dc_motor(pwm_value):
         print("DC 모터 OFF")
 
 def pwm_callback(channel):
-    global last_pulse_time
     pulse_start = time.time()
-    pulse_duration = pulse_start - last_pulse_time
-
-    # Software Debouncing 적용
-    if pulse_duration > debounce_duration:
-        last_pulse_time = pulse_start
+    pulse_end = pulse_start
+    while GPIO.input(pwm_pin) == GPIO.HIGH:
+        pulse_end = time.time()
+    pulse_duration = pulse_end - pulse_start
+    if pulse_duration != 0.0:
         pwm_value = round(pulse_duration * 1000000)  # PWM 값 변환 (마이크로초로 변환)
         print("PWM 값:", pwm_value)
 
@@ -45,7 +40,7 @@ GPIO.output(motor_pin, GPIO.LOW)  # 초기에는 모터 OFF로 설정
 try:
     GPIO.add_event_detect(pwm_pin, GPIO.BOTH, callback=pwm_callback)
     while True:
-        time.sleep(0.1)  # 0.1초 간격으로 PWM 값을 확인
+        time.sleep(0.5)  # 0.5초 간격으로 PWM 값을 확인
 except KeyboardInterrupt:
     pass
 finally:
