@@ -1,7 +1,7 @@
 import time
 import RPi.GPIO as GPIO
 
-pwm_pin = 17  # PWM 신호를 읽을 GPIO 핀
+pwm_pin = 18  # PWM 신호를 읽을 GPIO 핀
 motor_pin = 25  # DC 모터를 제어할 GPIO 핀
 frequency = 50  # PWM 주파수 (Hz)
 
@@ -45,7 +45,7 @@ GPIO.output(motor_pin, GPIO.LOW)  # 초기에는 모터 OFF로 설정
 try:
     GPIO.add_event_detect(pwm_pin, GPIO.BOTH, callback=pwm_callback)
     while True:
-        time.sleep(0.1)  # 작은 값으로 설정하여 실시간으로 PWM 값을 확인
+        time.sleep(0.5)  # 0.5초 간격으로 PWM 값을 확인
 except KeyboardInterrupt:
     pass
 finally:
