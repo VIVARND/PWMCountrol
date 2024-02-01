@@ -1,7 +1,7 @@
 import time
 import RPi.GPIO as GPIO
 
-pwm_pin = 18  # PWM 신호를 읽을 GPIO 핀
+pwm_pin = 17  # PWM 신호를 읽을 GPIO 핀
 motor_pin = 25  # DC 모터를 제어할 GPIO 핀
 frequency = 50  # PWM 주파수 (Hz)
 
