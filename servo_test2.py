@@ -39,7 +39,7 @@ pwm.start(0)
 try:
     GPIO.add_event_detect(pwm_pin, GPIO.BOTH, callback=pwm_callback)
     while True:
-        time.sleep(0.5)
+        time.sleep(0.02)  # 20ms 주기 (50Hz 주파수)에 맞춰서 작동
 except KeyboardInterrupt:
     pass
 finally:
