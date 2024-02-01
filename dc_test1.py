@@ -9,10 +9,6 @@ frequency = 50  # PWM 주파수 (Hz)
 PWM_MIN = 900
 PWM_MAX = 1100
 
-# Software Debouncing 관련 변수
-last_pulse_time = 0
-debounce_duration = 0.05  # 50ms
-
 def control_dc_motor(pwm_value):
     if PWM_MIN <= pwm_value <= PWM_MAX:
         # PWM 값에 따라 모터 상태 결정
@@ -23,18 +19,11 @@ def control_dc_motor(pwm_value):
         print("DC 모터 OFF")
 
 def pwm_callback(channel):
-    global last_pulse_time
-    pulse_start = time.time()
-    pulse_duration = pulse_start - last_pulse_time
+    pwm_value = round(time.time() * 1000000)  # 현재 시간을 이용하여 PWM 값 계산
+    print("PWM 값:", pwm_value)
 
-    # Software Debouncing 적용
-    if pulse_duration > debounce_duration:
-        last_pulse_time = pulse_start
-        pwm_value = round(pulse_duration * 1000000)  # PWM 값 변환 (마이크로초로 변환)
-        print("PWM 값:", pwm_value)
-
-        # PWM 값에 따라 DC 모터 상태 결정
-        control_dc_motor(pwm_value)
+    # PWM 값에 따라 DC 모터 상태 결정
+    control_dc_motor(pwm_value)
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
