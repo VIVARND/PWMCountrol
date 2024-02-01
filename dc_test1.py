@@ -19,15 +19,10 @@ def control_dc_motor(pwm_value):
         if 900 <= pwm_value <= 1100:
             GPIO.output(motor_pin, GPIO.HIGH)  # 모터 ON
             print("DC 모터 ON")
-        elif 1700 <= pwm_value <= 2000:
-            GPIO.output(motor_pin, GPIO.LOW)  # 모터 OFF
-            print("DC 모터 OFF")
         else:
-            GPIO.output(motor_pin, GPIO.LOW)  # 모든 다른 경우에도 모터 OFF
+            GPIO.output(motor_pin, GPIO.LOW)  # 모든 다른 경우 모터 OFF
             print("DC 모터 OFF")
-    else:
-        GPIO.output(motor_pin, GPIO.LOW)  # 모터 OFF
-        print("DC 모터 OFF")
+
 
 def pwm_callback(channel):
     global last_pulse_time
