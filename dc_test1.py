@@ -1,13 +1,13 @@
 import time
 import RPi.GPIO as GPIO
 
-pwm_pin = 18  # PWM 신호를 읽을 GPIO 핀
-motor_pin = 24  # DC 모터를 제어할 GPIO 핀
+pwm_pin = 23  # PWM 신호를 읽을 GPIO 핀 (다른 핀으로 변경)
+motor_pin = 25  # DC 모터를 제어할 GPIO 핀 (다른 핀으로 변경)
 frequency = 50  # PWM 주파수 (Hz)
 
 # PWM 값에 따른 모터 속도 조절 관련 상수
 PWM_MIN = 900
-PWM_MAX = 1100
+PWM_MAX = 1900
 SPEED_MIN = 0
 SPEED_MAX = 100
 
@@ -41,8 +41,8 @@ def pwm_callback(channel):
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
-GPIO.setup(pwm_pin, GPIO.IN)  # PWM 핀을 입력으로 설정
-GPIO.setup(motor_pin, GPIO.OUT)  # DC 모터 제어를 위한 GPIO 핀
+GPIO.setup(pwm_pin, GPIO.IN)  # PWM 핀을 입력으로 설정 (다른 핀으로 변경)
+GPIO.setup(motor_pin, GPIO.OUT)  # DC 모터 제어를 위한 GPIO 핀 (다른 핀으로 변경)
 
 pwm = GPIO.PWM(motor_pin, frequency)  # PWM 설정
 pwm.start(0)
