@@ -25,9 +25,9 @@ def pwm_callback(channel):
     # Software Debouncing 적용
     if pulse_duration > debounce_duration:
         last_pulse_time = pulse_start
-        pwm_value = pulse_duration * 1000000  # 정수로 변환하지 않고 소숫점 자리 보존
+        pwm_value = round(pulse_duration * 1000000)  # PWM 값 변환 (마이크로초로 변환)
         print("PWM 값:", pwm_value)
-
+        
         # PWM 값에 따라 서보모터 각도 설정
         if 900 <= pwm_value <= 1100:
             set_servo_angle(10)
@@ -51,7 +51,7 @@ try:
     while True:
         time.sleep(0.1)  # 작은 값으로 설정하여 실시간으로 PWM 값을 확인
 except KeyboardInterrupt:
-    print("키보드 인터럽트가 발생하여 프로그램을 종료합니다.")
+    pass
 finally:
     pwm.stop()
     GPIO.cleanup()
