@@ -3,13 +3,14 @@ import RPi.GPIO as GPIO
 
 pwm_pin = 17  # PWM 신호를 읽을 GPIO 핀
 motor_pin = 25  # DC 모터를 제어할 GPIO 핀
+frequency = 50  # PWM 주파수 (Hz)
 
 # PWM 값에 따른 모터 상태 설정
-PWM_MIN = 850
+PWM_MIN = 900
 PWM_MAX = 1100
 
-def control_dc_motor(pulse_duration):
-    if PWM_MIN <= pulse_duration <= PWM_MAX:
+def control_dc_motor(pwm_value):
+    if PWM_MIN <= pwm_value <= PWM_MAX:
         # PWM 값에 따라 모터 상태 결정
         GPIO.output(motor_pin, GPIO.HIGH)  # 모터 ON
         print("DC 모터 ON")
@@ -24,10 +25,11 @@ def pwm_callback(channel):
         pulse_end = time.time()
     pulse_duration = pulse_end - pulse_start
     if pulse_duration != 0.0:
-        print("펄스 길이:", pulse_duration)
+        pwm_value = round(pulse_duration * 1000000)  # PWM 값 변환 (마이크로초로 변환)
+        print("PWM 값:", pwm_value)
 
-        # 펄스 길이에 따라 DC 모터 상태 결정
-        control_dc_motor(pulse_duration)
+        # PWM 값에 따라 DC 모터 상태 결정
+        control_dc_motor(pwm_value)
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
