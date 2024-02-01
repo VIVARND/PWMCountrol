@@ -6,11 +6,11 @@ motor_pin = 25  # DC 모터를 제어할 GPIO 핀
 frequency = 50  # PWM 주파수 (Hz)
 
 # PWM 값에 따른 모터 상태 설정
-PWM_MIN = 900
-PWM_MAX = 1100
+PWM_ON_MIN = 900
+PWM_ON_MAX = 1100
 
 def control_dc_motor(pwm_value):
-    if PWM_MIN <= pwm_value <= PWM_MAX:
+    if PWM_ON_MIN <= pwm_value <= PWM_ON_MAX:
         # PWM 값에 따라 모터 상태 결정
         GPIO.output(motor_pin, GPIO.HIGH)  # 모터 ON
         print("DC 모터 ON")
