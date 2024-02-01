@@ -1,31 +1,37 @@
 import RPi.GPIO as GPIO
 import time
 
-# 모터 제어를 위한 GPIO 핀
-motor_pin = 17
+# 모터 제어를 위한 GPIO 핀 설정
+motor_pwm_pin = 18  # PWM 제어 핀
+motor_in1_pin = 23  # 모터 입력1
+motor_in2_pin = 24  # 모터 입력2
 
 # GPIO 핀 모드 설정
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
-GPIO.setup(motor_pin, GPIO.OUT)
-
-# PWM 주파수와 초기 듀티 사이클 설정
-pwm_frequency = 50  # Hz
-initial_duty_cycle = 0  # 0% (OFF 상태)
 
 # PWM 객체 초기화
-pwm = GPIO.PWM(motor_pin, pwm_frequency)
-pwm.start(initial_duty_cycle)
+pwm_frequency = 1000  # Hz
+pwm = GPIO.PWM(motor_pwm_pin, pwm_frequency)
+pwm.start(0)  # 초기 듀티 사이클: 0%
+
+# 모터 제어 핀 초기화
+GPIO.setup(motor_in1_pin, GPIO.OUT)
+GPIO.setup(motor_in2_pin, GPIO.OUT)
 
 try:
     while True:
-        # DC 모터를 1초 동안 회전 (최대 속도)
-        pwm.ChangeDutyCycle(100)  # 100% (최대 속도)
-        time.sleep(1)
+        # 모터를 시계방향으로 회전
+        GPIO.output(motor_in1_pin, GPIO.HIGH)
+        GPIO.output(motor_in2_pin, GPIO.LOW)
+        pwm.ChangeDutyCycle(50)  # 듀티 사이클: 50%
+        time.sleep(2)
 
-        # DC 모터를 1초 동안 정지
-        pwm.ChangeDutyCycle(0)  # 0% (정지)
-        time.sleep(1)
+        # 모터를 반시계방향으로 회전
+        GPIO.output(motor_in1_pin, GPIO.LOW)
+        GPIO.output(motor_in2_pin, GPIO.HIGH)
+        pwm.ChangeDutyCycle(50)  # 듀티 사이클: 50%
+        time.sleep(2)
 
 except KeyboardInterrupt:
     pass
