@@ -51,7 +51,7 @@ try:
     while True:
         time.sleep(0.1)  # 작은 값으로 설정하여 실시간으로 PWM 값을 확인
 except KeyboardInterrupt:
-    pass
+    print("키보드 인터럽트가 발생하여 프로그램을 종료합니다.")
 finally:
     pwm.stop()
     GPIO.cleanup()
