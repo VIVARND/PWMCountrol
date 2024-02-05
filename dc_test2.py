@@ -51,6 +51,7 @@ try:
                 control_dc_motor(0)  # 속도가 0인 경우 모터 정지
             else:
                 control_dc_motor(speed * direction)
+                
 
 except KeyboardInterrupt:
     pass
