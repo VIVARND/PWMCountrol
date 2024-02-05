@@ -7,7 +7,7 @@ motor_in1_pin = 22  # DC 모터 제어 핀
 
 SPEED_MIN = 1200
 SPEED_MAX = 1900
-SPEED_STEP = 10
+SPEED_STEP = 1  # 속도를 1씩 증가시키도록 변경
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -30,8 +30,6 @@ def control_dc_motor(speed):
         print(f"DC 모터 ON - 속도: {speed:.1f}%")
 
 try:
-    direction = -1  # 모터의 회전 방향 설정 (1: 정방향, -1: 역방향)
-
     while True:
         GPIO.wait_for_edge(pwm_pin_from_receiver, GPIO.RISING)
         pulse_start = time.time()
@@ -49,11 +47,10 @@ try:
             # PWM 값에 따라 DC 모터 상태 결정
             if pwm_value < SPEED_MIN:
                 control_dc_motor(0)  # 속도가 0인 경우 모터 정지
-            else:
-                if speed == 100:
-                    direction = -1  # 속도가 100일 때, 반대 방향으로 설정
-
+            elif pwm_value <= SPEED_MAX:
                 control_dc_motor(speed)
+            else:
+                control_dc_motor(0)  # 모터 정지
 
 except KeyboardInterrupt:
     pass
