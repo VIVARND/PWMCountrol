@@ -7,7 +7,7 @@ motor_in1_pin = 22  # DC 모터 제어 핀
 
 SPEED_MIN = 1200
 SPEED_MAX = 1900
-SPEED_STEP = 10  # 속도를 1씩 증가시키도록 변경
+SPEED_STEP = 10  # 속도를 10씩 증가시키도록 변경
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -26,7 +26,7 @@ def control_dc_motor(speed):
         print("DC 모터 OFF")
     else:
         GPIO.output(motor_in1_pin, GPIO.HIGH)  # 모터 ON
-        pwm.ChangeDutyCycle(100 - speed)  # 반전된 속도값 사용
+        pwm.ChangeDutyCycle(speed)
         print(f"DC 모터 ON - 속도: {speed:.1f}%")
 
 try:
@@ -48,7 +48,7 @@ try:
             if pwm_value < SPEED_MIN:
                 control_dc_motor(0)  # 속도가 0인 경우 모터 정지
             elif pwm_value <= SPEED_MAX:
-                control_dc_motor(speed)
+                control_dc_motor(speed + SPEED_STEP)
             else:
                 control_dc_motor(0)  # 모터 정지
 
