@@ -26,7 +26,8 @@ def control_dc_motor(speed, direction):
         print("DC 모터 OFF")
     else:
         GPIO.output(motor_in1_pin, GPIO.HIGH)  # 모터 ON
-        pwm.ChangeDutyCycle(100 - speed * direction)  # 반전된 속도값 사용
+        duty_cycle = min(100, max(0, speed * direction))  # 듀티 사이클 계산 (0 ~ 100)
+        pwm.ChangeDutyCycle(duty_cycle)
         print(f"DC 모터 ON - 속도: {speed:.1f}%")
 
 try:
