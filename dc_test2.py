@@ -3,7 +3,7 @@ import time
 
 motor_in1_pin = 17  # DIR 핀
 motor_pwm_pin = 18  # PWM 핀
-SPEED = 100  # 원하는 속도 (0 ~ 100)
+SPEED = 120  # 원하는 속도 (0 ~ 100)
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
