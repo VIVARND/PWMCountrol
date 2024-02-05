@@ -56,4 +56,6 @@ except KeyboardInterrupt:
     pass
 
 finally:
-    pwm.
+    pwm.stop()
+    GPIO.cleanup()
+    print("GPIO 정리 완료. 프로그램 종료.")
