@@ -4,7 +4,7 @@ import time
 pwm_pin = 17  # PWM 신호를 읽을 GPIO 핀
 motor_in1_pin = 18  # DIR 핀
 
-SPEED_MIN = 1000
+SPEED_MIN = 1200
 SPEED_MAX = 1900
 SPEED_STEP = 0.1
 
@@ -17,7 +17,7 @@ GPIO.output(motor_in1_pin, GPIO.LOW)  # 초기에는 모터 OFF로 설정
 
 def control_dc_motor(speed):
     GPIO.output(motor_in1_pin, GPIO.HIGH)  # 모터 ON
-    print(f"DC 모터 ON - 속도: {speed}%")
+    print(f"DC 모터 ON - 속도: {speed:.1f}%")
 
 try:
     while True:
@@ -33,10 +33,9 @@ try:
             speed = min(100, max(0, (pwm_value - SPEED_MIN) / (SPEED_MAX - SPEED_MIN) * 100))  # 속도 계산 (0 ~ 100)
 
             print("PWM 값:", pwm_value)
-            print("속도:", speed)
 
             # PWM 값에 따라 DC 모터 상태 결정
-            if pwm_value <= SPEED_MIN:
+            if pwm_value < SPEED_MIN:
                 GPIO.output(motor_in1_pin, GPIO.LOW)  # 모터 OFF
                 print("DC 모터 OFF")
             else:
