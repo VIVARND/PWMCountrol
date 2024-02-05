@@ -52,8 +52,6 @@ try:
             else:
                 if speed == 100:
                     direction = -1  # 속도가 100일 때, 반대 방향으로 설정
-                elif speed == 0:
-                    direction = 1  # 속도가 0일 때, 정방향으로 설정
 
                 control_dc_motor(speed)
 
