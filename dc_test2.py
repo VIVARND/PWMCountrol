@@ -7,7 +7,7 @@ motor_in1_pin = 22  # DC 모터 제어 핀
 
 SPEED_MIN = 1200
 SPEED_MAX = 1900
-SPEED_STEP = 1  # 속도를 1씩 증가시키도록 변경
+SPEED_STEP = 10  # 속도를 1씩 증가시키도록 변경
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
