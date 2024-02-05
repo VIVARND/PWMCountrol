@@ -5,6 +5,7 @@ pwm_pin_from_receiver = 17  # R3008SB의 PWM 신호를 읽을 GPIO 핀
 motor_pwm_pin = 18  # DC 모터 PWM 핀
 motor_in1_pin = 22  # DC 모터 제어 핀
 
+
 SPEED_MIN = 1200
 SPEED_MAX = 1900
 SPEED_STEP = 10
