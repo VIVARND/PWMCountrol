@@ -5,7 +5,6 @@ pwm_pin_from_receiver = 17  # R3008SB의 PWM 신호를 읽을 GPIO 핀
 motor_pwm_pin = 18  # DC 모터 PWM 핀
 motor_in1_pin = 22  # DC 모터 제어 핀
 
-
 SPEED_MIN = 1200
 SPEED_MAX = 1900
 SPEED_STEP = 10
@@ -22,13 +21,14 @@ pwm = GPIO.PWM(motor_pwm_pin, 100)  # PWM 주파수를 100Hz로 설정
 pwm.start(0)
 
 def control_dc_motor(speed):
-    if speed == 0:
+    if speed < SPEED_MIN:
         GPIO.output(motor_in1_pin, GPIO.LOW)  # 모터 OFF
+        pwm.ChangeDutyCycle(0)  # PWM 신호를 0으로 설정 (정지)
         print("DC 모터 OFF")
     else:
         GPIO.output(motor_in1_pin, GPIO.HIGH)  # 모터 ON
         pwm.ChangeDutyCycle(speed)
-        print(f"DC 모터 ON - 속도: {speed}%")
+        print(f"DC 모터 ON - 속도: {speed:.1f}%")
 
 try:
     while True:
