@@ -15,17 +15,16 @@ GPIO.setwarnings(False)
 GPIO.setup(pwm_pin_from_receiver, GPIO.IN)
 GPIO.setup(motor_pwm_pin, GPIO.OUT)
 GPIO.setup(motor_in1_pin, GPIO.OUT)
-GPIO.output(motor_in1_pin, GPIO.HIGH)  # 모터를 반시계방향으로 설정
+GPIO.output(motor_in1_pin, GPIO.LOW)  # 모터를 A방향으로 설정
 
 pwm = GPIO.PWM(motor_pwm_pin, 100)  # PWM 주파수를 100Hz로 설정
 pwm.start(0)
 
 def control_dc_motor(speed):
     if speed == 0:
-        GPIO.output(motor_in1_pin, GPIO.LOW)  # 모터 OFF
+        pwm.ChangeDutyCycle(0)  # 모터 OFF
         print("DC 모터 OFF")
     else:
-        GPIO.output(motor_in1_pin, GPIO.HIGH)  # 모터 ON
         pwm.ChangeDutyCycle(speed)  # 속도값 사용
         print(f"DC 모터 ON - 속도: {speed:.1f}%")
 
