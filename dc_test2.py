@@ -25,6 +25,7 @@ GPIO.setup(motor_pin, GPIO.OUT)  # DC 모터 제어를 위한 GPIO 핀
 GPIO.output(motor_pin, GPIO.LOW)  # 초기에는 모터 OFF로 설정
 
 try:
+    GPIO.setup(pwm_pin_from_receiver, GPIO.OUT)  # PWM 핀을 출력으로 설정
     pwm = GPIO.PWM(pwm_pin_from_receiver, frequency)
     pwm.start(0)
 
