@@ -26,11 +26,11 @@ def control_dc_motor(speed, direction):
         print("DC 모터 OFF")
     else:
         GPIO.output(motor_in1_pin, GPIO.HIGH)  # 모터 ON
-        pwm.ChangeDutyCycle(speed * direction)  # 방향에 따른 속도값 사용
+        pwm.ChangeDutyCycle(100 - speed * direction)  # 반전된 속도값 사용
         print(f"DC 모터 ON - 속도: {speed:.1f}%")
 
 try:
-    direction = 1  # 초기 방향 설정 (1: 정방향, -1: 역방향)
+    direction = -1  # 초기 방향 설정 (1: 정방향, -1: 역방향)
 
     while True:
         GPIO.wait_for_edge(pwm_pin_from_receiver, GPIO.RISING)
