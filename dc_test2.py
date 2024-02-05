@@ -26,11 +26,11 @@ def control_dc_motor(speed):
         print("DC 모터 OFF")
     else:
         GPIO.output(motor_in1_pin, GPIO.HIGH)  # 모터 ON
-        pwm.ChangeDutyCycle(speed)
+        pwm.ChangeDutyCycle(100 - speed)  # 반전된 속도값 사용
         print(f"DC 모터 ON - 속도: {speed:.1f}%")
 
 try:
-    direction = -1  # 모터의 회전 방향 설정 (1: 정방향, -1: 역방향)
+    direction = 1  # 모터의 회전 방향 설정 (1: 정방향, -1: 역방향)
 
     while True:
         GPIO.wait_for_edge(pwm_pin_from_receiver, GPIO.RISING)
@@ -50,8 +50,7 @@ try:
             if pwm_value < SPEED_MIN:
                 control_dc_motor(0)  # 속도가 0인 경우 모터 정지
             else:
-                control_dc_motor(speed * direction)
-                
+                control_dc_motor(speed)
 
 except KeyboardInterrupt:
     pass
