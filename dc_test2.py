@@ -21,7 +21,7 @@ pwm = GPIO.PWM(motor_pwm_pin, 100)  # PWM 주파수를 100Hz로 설정
 pwm.start(0)
 
 def control_dc_motor(speed):
-    if speed < SPEED_MIN:
+    if speed <= SPEED_MIN:
         GPIO.output(motor_in1_pin, GPIO.LOW)  # 모터 OFF
         pwm.ChangeDutyCycle(0)  # PWM 신호를 0으로 설정 (정지)
         print("DC 모터 OFF")
