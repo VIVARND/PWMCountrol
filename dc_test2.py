@@ -3,7 +3,6 @@ import time
 
 pwm_pin_from_receiver = 17  # R3008SB의 PWM 신호를 읽을 GPIO 핀
 motor_pin = 18  # DC 모터를 제어할 GPIO 핀
-frequency = 50  # PWM 주파수 (Hz)
 
 # PWM 값에 따른 모터 상태 설정
 PWM_ON_MIN = 1200
@@ -25,23 +24,18 @@ GPIO.setup(motor_pin, GPIO.OUT)  # DC 모터 제어를 위한 GPIO 핀
 GPIO.output(motor_pin, GPIO.LOW)  # 초기에는 모터 OFF로 설정
 
 try:
-    GPIO.setup(pwm_pin_from_receiver, GPIO.OUT)  # PWM 핀을 출력으로 설정
-    pwm = GPIO.PWM(pwm_pin_from_receiver, frequency)
-    pwm.start(0)
-
+    GPIO.setup(pwm_pin_from_receiver, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # 내장 풀다운 설정 추가
     while True:
         pwm_value = GPIO.input(pwm_pin_from_receiver)
-        pwm.ChangeDutyCycle((pwm_value / 4096) * 100)  # PWM 신호를 퍼센트로 변환
         print("PWM 값:", pwm_value)
 
         # PWM 값에 따라 DC 모터 상태 결정
         control_dc_motor(pwm_value)
-        time.sleep(0.5)  # 0.5초 간격으로 PWM 값을 확인
+        time.sleep(0.01)  # 0.01초 간격으로 PWM 값을 확인 (적절한 값을 선택해보세요)
 
 except KeyboardInterrupt:
     pass
 
 finally:
-    pwm.stop()
     GPIO.cleanup()
     print("GPIO 정리 완료. 프로그램 종료.")
