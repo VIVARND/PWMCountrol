@@ -37,6 +37,7 @@ try:
 
             # PWM 값에 따라 DC 모터 상태 결정
             control_dc_motor(pwm_value, speed)
+
         time.sleep(0.5)  # 0.5초 간격으로 PWM 값을 확인
 
 except KeyboardInterrupt:
