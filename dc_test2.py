@@ -1,5 +1,4 @@
 import RPi.GPIO as GPIO
-import time
 
 pwm_pin = 17  # PWM 신호를 읽을 GPIO 핀
 motor_in1_pin = 18  # DIR 핀
@@ -24,10 +23,11 @@ def control_dc_motor(pwm_value, speed):
 
 try:
     while True:
+        GPIO.wait_for_edge(pwm_pin, GPIO.RISING)
         pulse_start = time.time()
-        pulse_end = pulse_start
-        while GPIO.input(pwm_pin) == GPIO.HIGH:
-            pulse_end = time.time()
+        GPIO.wait_for_edge(pwm_pin, GPIO.FALLING)
+        pulse_end = time.time()
+        
         pulse_duration = pulse_end - pulse_start
 
         if pulse_duration != 0.0:
@@ -37,8 +37,6 @@ try:
 
             # PWM 값에 따라 DC 모터 상태 결정
             control_dc_motor(pwm_value, speed)
-
-        time.sleep(0.5)  # 0.5초 간격으로 PWM 값을 확인
 
 except KeyboardInterrupt:
     pass
