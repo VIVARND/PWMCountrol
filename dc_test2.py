@@ -21,9 +21,8 @@ pwm = GPIO.PWM(motor_pwm_pin, 100)  # PWM 주파수를 100Hz로 설정
 pwm.start(0)
 
 def control_dc_motor(speed):
-    if speed <= SPEED_MIN:
+    if speed == 0:
         GPIO.output(motor_in1_pin, GPIO.LOW)  # 모터 OFF
-        pwm.ChangeDutyCycle(0)  # PWM 신호를 0으로 설정 (정지)
         print("DC 모터 OFF")
     else:
         GPIO.output(motor_in1_pin, GPIO.HIGH)  # 모터 ON
@@ -46,7 +45,10 @@ try:
             print("PWM 값:", pwm_value)
 
             # PWM 값에 따라 DC 모터 상태 결정
-            control_dc_motor(speed)
+            if pwm_value < SPEED_MIN:
+                control_dc_motor(0)  # 속도가 0인 경우 모터 정지
+            else:
+                control_dc_motor(speed)
 
 except KeyboardInterrupt:
     pass
