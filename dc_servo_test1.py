@@ -27,19 +27,19 @@ servo_pwm.start(0)
 def control_dc_motor(speed):
     if speed == 0:
         dc_motor_pwm.ChangeDutyCycle(0)  # DC 모터 OFF
-        print("PWM1 - DC 모터 OFF")
+        print(f"PWM1 값: {speed:.1f}% - DC 모터 OFF")
     else:
         dc_motor_pwm.ChangeDutyCycle(speed)  # DC 모터 속도값 사용
-        print(f"PWM1 - DC 모터 ON - 속도: {speed:.1f}%")
+        print(f"PWM1 값: {speed:.1f}% - DC 모터 ON")
 
 def set_servo_angle(angle):
     duty_cycle = angle / 18.0 + 2.5  # 각도에 따른 PWM 듀티 사이클 계산
     servo_pwm.ChangeDutyCycle(duty_cycle)
-    print(f"PWM2 - 현재 서보모터 각도: {angle}도")
+    print(f"PWM2 값: {angle:.1f}도 - 현재 서보모터 각도")
 
 def stop_servo():
     servo_pwm.ChangeDutyCycle(0)  # PWM 신호를 0으로 설정 (서보 모터 정지)
-    print("PWM2 - 서보모터 정지")
+    print("PWM2 값: 0.0도 - 서보모터 정지")
 
 try:
     while True:
@@ -52,7 +52,7 @@ try:
 
         if pulse_duration != 0.0:
             pwm_value = round(pulse_duration * 1000000)  # PWM 값 변환 (마이크로초로 변환)
-            print("PWM 값:", pwm_value)
+            print(f"PWM 값: {pwm_value}")
 
             # PWM 값에 따라 DC 모터 상태 결정
             if pwm_value < SPEED_MIN:
