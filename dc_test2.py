@@ -30,7 +30,7 @@ def control_dc_motor(speed):
         print(f"DC 모터 ON - 속도: {speed:.1f}%")
 
 try:
-    direction = 1  # 모터의 회전 방향 설정 (1: 정방향, -1: 역방향)
+    direction = -1  # 모터의 회전 방향 설정 (1: 정방향, -1: 역방향)
 
     while True:
         GPIO.wait_for_edge(pwm_pin_from_receiver, GPIO.RISING)
