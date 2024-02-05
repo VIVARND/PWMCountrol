@@ -3,6 +3,7 @@ import time
 
 motor_in1_pin = 17  # DIR 핀
 motor_pwm_pin = 18  # PWM 핀
+SPEED = 50  # 원하는 속도 (0 ~ 100)
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -15,11 +16,10 @@ pwm.start(0)
 
 try:
     while True:
-        # 전진 및 속도 조절
+        # 전진 및 일정한 속도 조절
         GPIO.output(motor_in1_pin, GPIO.HIGH)
-        for speed in range(0, 101, 10):
-            pwm.ChangeDutyCycle(speed)
-            time.sleep(0.5)
+        pwm.ChangeDutyCycle(SPEED)
+        time.sleep(2)
 
         # 정지
         GPIO.output(motor_in1_pin, GPIO.LOW)
