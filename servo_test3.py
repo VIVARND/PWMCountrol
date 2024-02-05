@@ -1,7 +1,7 @@
 import time
 import RPi.GPIO as GPIO
 
-pwm_pin = 18  # PWM 신호를 읽을 GPIO 핀
+pwm_pin = 23  # PWM 신호를 읽을 GPIO 핀
 servo_pin = 24  # 서보 모터를 제어할 GPIO 핀
 
 def set_servo_angle(angle):
