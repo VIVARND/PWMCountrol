@@ -26,13 +26,13 @@ def pwm_callback(channel):
         # PWM 값에 따라 서보모터 각도 설정
         if 900 <= pwm_value <= 1100:
             set_servo_angle(0)
-        elif 1100 < pwm_value <= 1300:
+        elif 1100 < pwm_value <= 1200:
             set_servo_angle(30)
-        elif 1300 < pwm_value <= 1500:
+        elif 1300 <= pwm_value <= 1400:
             set_servo_angle(60)
-        elif 1500 < pwm_value <= 1700:
+        elif 1500 <= pwm_value <= 1600:
             set_servo_angle(90)
-        elif 1700 < pwm_value <= 2000:
+        elif 1800 <= pwm_value <= 2000:
             set_servo_angle(120)
         else:
             stop_servo()
