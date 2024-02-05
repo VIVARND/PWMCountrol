@@ -25,8 +25,12 @@ GPIO.setup(motor_pin, GPIO.OUT)  # DC 모터 제어를 위한 GPIO 핀
 GPIO.output(motor_pin, GPIO.LOW)  # 초기에는 모터 OFF로 설정
 
 try:
+    pwm = GPIO.PWM(pwm_pin_from_receiver, frequency)
+    pwm.start(0)
+
     while True:
         pwm_value = GPIO.input(pwm_pin_from_receiver)
+        pwm.ChangeDutyCycle((pwm_value / 4096) * 100)  # PWM 신호를 퍼센트로 변환
         print("PWM 값:", pwm_value)
 
         # PWM 값에 따라 DC 모터 상태 결정
@@ -37,5 +41,6 @@ except KeyboardInterrupt:
     pass
 
 finally:
+    pwm.stop()
     GPIO.cleanup()
     print("GPIO 정리 완료. 프로그램 종료.")
