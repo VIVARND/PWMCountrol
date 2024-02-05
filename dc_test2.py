@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO
+import time
 
 pwm_pin = 17  # PWM 신호를 읽을 GPIO 핀
 motor_in1_pin = 18  # DIR 핀
