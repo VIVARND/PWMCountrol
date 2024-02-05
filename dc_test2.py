@@ -15,20 +15,11 @@ pwm.start(0)
 
 try:
     while True:
-        # 전진
+        # 전진 및 속도 조절
         GPIO.output(motor_in1_pin, GPIO.HIGH)
-        pwm.ChangeDutyCycle(50)  # 속도를 50%로 설정
-        time.sleep(2)
-
-        # 정지
-        GPIO.output(motor_in1_pin, GPIO.LOW)
-        pwm.ChangeDutyCycle(0)
-        time.sleep(1)
-
-        # 후진
-        GPIO.output(motor_in1_pin, GPIO.LOW)
-        pwm.ChangeDutyCycle(50)
-        time.sleep(2)
+        for speed in range(0, 101, 10):
+            pwm.ChangeDutyCycle(speed)
+            time.sleep(0.5)
 
         # 정지
         GPIO.output(motor_in1_pin, GPIO.LOW)
