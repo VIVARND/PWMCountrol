@@ -50,7 +50,6 @@ try:
             if pwm_value < SPEED_MIN:
                 control_dc_motor(0)  # 속도가 0인 경우 모터 정지
             else:
-                direction = 1  # 속도가 1200 이상일 때, 정방향으로 설정
                 control_dc_motor(speed)
 
 except KeyboardInterrupt:
