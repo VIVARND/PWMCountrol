@@ -74,15 +74,15 @@ try:
             # PWM2 신호 및 서보모터 각도 출력
             print(f"PWM2 신호: {pwm_value_servo}")
             if 900 <= pwm_value_servo <= 1100:
-                set_servo_angle(0)
+                target_angle = 0
             elif 1100 < pwm_value_servo <= 1200:
-                set_servo_angle(30)
+                target_angle = 30
             elif 1300 <= pwm_value_servo <= 1400:
-                set_servo_angle(60)
+                target_angle = 60
             elif 1500 <= pwm_value_servo <= 1600:
-                set_servo_angle(90)
+                target_angle = 90
             elif 1800 <= pwm_value_servo <= 2000:
-                set_servo_angle(120)
+                target_angle = 120
 
 except KeyboardInterrupt:
     pass
