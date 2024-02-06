@@ -8,7 +8,7 @@ motor_in1_pin = 22  # DC 모터 제어 DIR 핀
 servo_pwm_pin = 24  # 서보 모터 PWM 핀
 
 SPEED_MIN = 1200
-SPEED_MAX = 2000
+SPEED_MAX = 1950
 SPEED_STEP = 10  # DC 모터 속도를 10씩 증가시키도록 변경
 
 GPIO.setmode(GPIO.BCM)
@@ -73,15 +73,15 @@ try:
 
             # PWM2 신호 및 서보모터 각도 출력
             print(f"PWM2 신호: {pwm_value_servo}")
-            if 900 <= pwm_value_servo <= 1100:
+            if 900 <= pwm_value_servo <= 1150:
                 set_servo_angle(0)
-            elif 1100 < pwm_value_servo <= 1200:
+            elif 1100 < pwm_value_servo <= 1250:
                 set_servo_angle(30)
-            elif 1300 <= pwm_value_servo <= 1400:
+            elif 1300 <= pwm_value_servo <= 1450:
                 set_servo_angle(60)
-            elif 1500 <= pwm_value_servo <= 1600:
+            elif 1500 <= pwm_value_servo <= 1650:
                 set_servo_angle(90)
-            elif 1800 <= pwm_value_servo <= 2000:
+            elif 1800 <= pwm_value_servo <= 2050:
                 set_servo_angle(120)
 
 except KeyboardInterrupt:
