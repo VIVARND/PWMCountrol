@@ -53,7 +53,11 @@ try:
             if pwm_value_dc < SPEED_MIN:
                 control_dc_motor(0)  # 속도가 0인 경우 모터 정지
             elif pwm_value_dc <= SPEED_MAX:
-                control_dc_motor(pwm_value_dc)
+                # 아래 부분 추가
+                if pwm_value_dc > SPEED_MIN + SPEED_STEP:  # 최소 속도에서 STEP 이상인 경우에만 증가
+                    control_dc_motor(pwm_value_dc - SPEED_STEP)
+                else:
+                    control_dc_motor(SPEED_MIN)
             else:
                 control_dc_motor(100)  # 최대 속도로 모터 동작
 
