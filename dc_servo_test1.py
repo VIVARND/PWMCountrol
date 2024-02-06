@@ -78,15 +78,15 @@ try:
 
             # 범위 확인
             if 900 <= pwm_value_servo <= 2050:
-                if 900 <= pwm_value_servo <= 1150:
+                if 900 <= pwm_value_servo <= 1200:
                     set_servo_angle(0)
-                elif 1100 < pwm_value_servo <= 1250:
+                elif 1250 < pwm_value_servo <= 1400:
                     set_servo_angle(30)
-                elif 1300 <= pwm_value_servo <= 1450:
+                elif 1450 <= pwm_value_servo <= 1600:
                     set_servo_angle(60)
-                elif 1500 <= pwm_value_servo <= 1650:
+                elif 1650 <= pwm_value_servo <= 1800:
                     set_servo_angle(90)
-                elif 1800 <= pwm_value_servo <= 2050:
+                elif 1850 <= pwm_value_servo <= 2050:
                     set_servo_angle(120)
                 print(f"PWM2 신호: {pwm_value_servo}")
             else:
