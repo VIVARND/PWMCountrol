@@ -40,8 +40,14 @@ def control_dc_motor(speed):
 
 def set_servo_angle(angle):
     duty_cycle = angle / 18.0 + 2.5  # 각도에 따른 PWM 듀티 사이클 계산
+    print(f"계산된 듀티 사이클: {duty_cycle}")
+
+    # 듀티 사이클이 유효한 범위 내에 있는지 확인
+    duty_cycle = max(0.0, min(100.0, duty_cycle))
+
     servo_pwm.ChangeDutyCycle(duty_cycle)
     print(f"PWM2 - 현재 서보모터 각도: {angle}도")
+
 
 def stabilize_servo(target_angle, current_angle):
     # 서보모터의 움직임을 안정화시키는 함수
