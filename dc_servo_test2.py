@@ -8,9 +8,12 @@ motor_in1_pin = 22  # DC 모터 제어 DIR 핀
 servo_pwm_pin = 24  # 서보 모터 PWM 핀
 
 SPEED_MIN = 1200
-SPEED_MAX = 2000
+SPEED_MAX = 1950
 SPEED_STEP = 10  # DC 모터 속도를 10씩 증가시키도록 변경
-SERVO_SPEED = 1  # 서보 모터 이동 속도 조절 (1보다 작은 값이면 더 빠르게, 크면 느리게 이동)
+
+SERVO_MIN = 900
+SERVO_MAX = 2050
+SERVO_STEP = 10  # 서보 모터 각도를 10씩 증가시키도록 변경
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -36,17 +39,25 @@ def control_dc_motor(speed):
         print(f"PWM1 - DC 모터 ON - 속도: {speed:.1f}%")
 
 def set_servo_angle(angle):
-    current_angle = 0
-    while current_angle != angle:
-        if current_angle < angle:
-            current_angle += SERVO_SPEED
-        else:
-            current_angle -= SERVO_SPEED
+    duty_cycle = angle / 18.0 + 2.5  # 각도에 따른 PWM 듀티 사이클 계산
+    print(f"계산된 듀티 사이클: {duty_cycle}")
 
-        duty_cycle = current_angle / 18.0 + 2.5  # 각도에 따른 PWM 듀티 사이클 계산
-        servo_pwm.ChangeDutyCycle(duty_cycle)
-        time.sleep(0.1)  # 서보 모터 이동을 부드럽게 하기 위한 대기 시간
-        print(f"PWM2 - 현재 서보모터 각도: {current_angle}도")
+    # 듀티 사이클이 유효한 범위 내에 있는지 확인
+    duty_cycle = max(0.0, min(100.0, duty_cycle))
+
+    servo_pwm.ChangeDutyCycle(duty_cycle)
+    print(f"PWM2 - 현재 서보모터 각도: {angle}도")
+
+
+def stabilize_servo(target_angle, current_angle):
+    # 서보모터의 움직임을 안정화시키는 함수
+    if target_angle != current_angle:
+        angle_diff = target_angle - current_angle
+        step = int(angle_diff / abs(angle_diff)) * SERVO_STEP
+        new_angle = current_angle + step
+        new_angle = max(SERVO_MIN, min(SERVO_MAX, new_angle))
+        set_servo_angle(new_angle)
+        time.sleep(0.1)  # 안정화를 위해 잠시 대기
 
 try:
     while True:
@@ -59,16 +70,12 @@ try:
 
         if pulse_duration_dc != 0.0:
             pwm_value_dc = round(pulse_duration_dc * 1000000)  # PWM 값 변환 (마이크로초로 변환)
-            speed_dc = min(100, max(0, (pwm_value_dc - SPEED_MIN) / (SPEED_MAX - SPEED_MIN) * 100))  # 속도 계산 (0 ~ 100)
-
-            # PWM1 신호 및 DC 모터 상태 출력
-            print(f"PWM1 신호: {pwm_value_dc}")
-            if pwm_value_dc < SPEED_MIN:
-                control_dc_motor(0)  # 속도가 0인 경우 모터 정지
-            elif pwm_value_dc <= SPEED_MAX:
-                control_dc_motor(speed_dc)
-            else:
-                control_dc_motor(100)  # 최대 속도로 모터 동작
+            
+            # 범위 확인
+            pwm_value_dc = max(SPEED_MIN, min(SPEED_MAX, pwm_value_dc))
+            speed_dc = (pwm_value_dc - SPEED_MIN) / (SPEED_MAX - SPEED_MIN) * 100  # 속도 계산 (0 ~ 100)
+            control_dc_motor(speed_dc)
+            print(f"PWM1 신호: {pwm_value_dc}, PWM1 - DC 모터 ON - 속도: {speed_dc:.1f}%")
 
         GPIO.wait_for_edge(pwm_pin_from_receiver_servo, GPIO.RISING)
         pulse_start_servo = time.time()
@@ -79,9 +86,11 @@ try:
 
         if pulse_duration_servo != 0.0:
             pwm_value_servo = round(pulse_duration_servo * 1000000)  # PWM 값 변환 (마이크로초로 변환)
-
-            # PWM2 신호 및 서보모터 각도 출력
-            print(f"PWM2 신호: {pwm_value_servo}")
+            
+            # 범위 확인
+            pwm_value_servo = max(SERVO_MIN, min(SERVO_MAX, pwm_value_servo))
+            
+            # 목표 각도 설정
             if 900 <= pwm_value_servo <= 1200:
                 target_angle = 0
             elif 1250 < pwm_value_servo <= 1400:
@@ -92,9 +101,8 @@ try:
                 target_angle = 90
             elif 1850 <= pwm_value_servo <= 2050:
                 target_angle = 120
-
-            # 서보 모터 작동
-            set_servo_angle(target_angle)
+            
+            stabilize_servo(target_angle, pwm_value_servo)
 
 except KeyboardInterrupt:
     pass
