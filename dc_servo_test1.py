@@ -33,11 +33,22 @@ pins = [
     servo_pwm_pin
 ]
 
-GPIO.setup(pins, GPIO.OUT, initial=GPIO.LOW)
+# GPIO 핀을 입력으로 설정
+for pin in pins:
+    GPIO.setup(pin, GPIO.IN)
 
-dc_motor_pwm = GPIO.PWM(motor_pwm_pin, 100)  # DC 모터 PWM 주파수를 100Hz로 설정
-servo_pwm = GPIO.PWM(servo_pwm_pin, 50)  # 서보 모터 PWM 주파수를 50Hz로 설정
+# GPIO 핀을 출력으로 설정
+GPIO.setup(motor_pwm_pin, GPIO.OUT)
+GPIO.setup(motor_in1_pin, GPIO.OUT)
+GPIO.setup(servo_pwm_pin, GPIO.OUT)
+
+# DC 모터 초기 설정
+GPIO.output(motor_in1_pin, GPIO.LOW)
+dc_motor_pwm = GPIO.PWM(motor_pwm_pin, 100)
 dc_motor_pwm.start(0)
+
+# 서보 모터 초기 설정
+servo_pwm = GPIO.PWM(servo_pwm_pin, 50)
 servo_pwm.start(0)
 
 speed_dc = 0  # 전역 변수로 속도 값 초기화
