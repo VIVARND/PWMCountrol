@@ -27,6 +27,16 @@ servo_pwm = GPIO.PWM(servo_pwm_pin, 50)  # 서보 모터 PWM 주파수를 50Hz�
 dc_motor_pwm.start(0)
 servo_pwm.start(0)
 
+# 서보 모터 각도 설정 함수 정의
+def set_servo_angle(angle):
+    duty = angle / 18 + 2
+    GPIO.output(servo_pwm_pin, True)
+    servo_pwm.ChangeDutyCycle(duty)
+    time.sleep(1)
+    GPIO.output(servo_pwm_pin, False)
+    servo_pwm.ChangeDutyCycle(0)
+
+# DC 모터 제어 함수 정의
 def control_dc_motor(speed):
     if speed == 0:
         dc_motor_pwm.ChangeDutyCycle(0)  # DC 모터 OFF
