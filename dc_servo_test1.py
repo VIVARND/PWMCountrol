@@ -11,6 +11,9 @@ SPEED_MIN = 1200
 SPEED_MAX = 1950
 SPEED_STEP = 10  # DC 모터 속도를 10씩 증가시키도록 변경
 
+SERVO_MIN = 950
+SERVO_MAX = 1950
+
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
@@ -53,7 +56,6 @@ try:
             if pwm_value_dc < SPEED_MIN:
                 control_dc_motor(0)  # 속도가 0인 경우 모터 정지
             elif pwm_value_dc <= SPEED_MAX:
-                # 아래 부분 추가
                 if pwm_value_dc > SPEED_MIN + SPEED_STEP:  # 최소 속도에서 STEP 이상인 경우에만 증가
                     control_dc_motor(pwm_value_dc - SPEED_STEP)
                 else:
@@ -73,16 +75,17 @@ try:
 
             # PWM2 신호 및 서보모터 각도 출력
             print(f"PWM2 신호: {pwm_value_servo}")
-            if 900 <= pwm_value_servo <= 1150:
-                set_servo_angle(0)
-            elif 1100 < pwm_value_servo <= 1250:
-                set_servo_angle(30)
-            elif 1300 <= pwm_value_servo <= 1450:
-                set_servo_angle(60)
-            elif 1500 <= pwm_value_servo <= 1650:
-                set_servo_angle(90)
-            elif 1800 <= pwm_value_servo <= 1950:
-                set_servo_angle(120)
+            if SERVO_MIN <= pwm_value_servo <= SERVO_MAX:
+                if 900 <= pwm_value_servo <= 1150:
+                    set_servo_angle(0)
+                elif 1100 < pwm_value_servo <= 1250:
+                    set_servo_angle(30)
+                elif 1300 <= pwm_value_servo <= 1450:
+                    set_servo_angle(60)
+                elif 1500 <= pwm_value_servo <= 1650:
+                    set_servo_angle(90)
+                elif 1800 <= pwm_value_servo <= 1950:
+                    set_servo_angle(120)
 
 except KeyboardInterrupt:
     pass
