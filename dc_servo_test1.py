@@ -11,10 +11,6 @@ SPEED_MIN = 1200
 SPEED_MAX = 1950
 SPEED_STEP = 10  # DC 모터 속도를 10씩 증가시키도록 변경
 
-SERVO_MIN = 950
-SERVO_MAX = 1950
-SERVO_STEP = 10  # 10도씩 증가시키도록 변경
-
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
@@ -39,8 +35,6 @@ def control_dc_motor(speed):
         print(f"PWM1 - DC 모터 ON - 속도: {speed:.1f}%")
 
 def set_servo_angle(angle):
-    if angle > 120:
-        angle = 120  # 최대 120도까지 제한
     duty_cycle = angle / 18.0 + 2.5  # 각도에 따른 PWM 듀티 사이클 계산
     servo_pwm.ChangeDutyCycle(duty_cycle)
     print(f"PWM2 - 현재 서보모터 각도: {angle}도")
@@ -79,9 +73,16 @@ try:
 
             # PWM2 신호 및 서보모터 각도 출력
             print(f"PWM2 신호: {pwm_value_servo}")
-            if SERVO_MIN <= pwm_value_servo <= SERVO_MAX:
-                angle = (pwm_value_servo - SERVO_MIN) // SERVO_STEP * 10  # 10도씩 증가
-                set_servo_angle(angle)
+            if 900 <= pwm_value_servo <= 1150:
+                set_servo_angle(0)
+            elif 1100 < pwm_value_servo <= 1250:
+                set_servo_angle(30)
+            elif 1300 <= pwm_value_servo <= 1450:
+                set_servo_angle(60)
+            elif 1500 <= pwm_value_servo <= 1650:
+                set_servo_angle(90)
+            elif 1800 <= pwm_value_servo <= 1950:
+                set_servo_angle(120)
 
 except KeyboardInterrupt:
     pass
