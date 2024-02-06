@@ -84,6 +84,9 @@ try:
             elif 1800 <= pwm_value_servo <= 2000:
                 target_angle = 120
 
+            # 서보 모터 작동
+            set_servo_angle(target_angle)
+
 except KeyboardInterrupt:
     pass
 
