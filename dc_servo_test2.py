@@ -11,6 +11,10 @@ SPEED_MIN = 1200
 SPEED_MAX = 1950
 SPEED_STEP = 10  # DC 모터 속도를 10씩 증가시키도록 변경
 
+SERVO_MIN = 900
+SERVO_MAX = 2050
+SERVO_STEP = 10  # 서보 모터 각도를 10씩 증가시키도록 변경
+
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
@@ -39,6 +43,16 @@ def set_servo_angle(angle):
     servo_pwm.ChangeDutyCycle(duty_cycle)
     print(f"PWM2 - 현재 서보모터 각도: {angle}도")
 
+def stabilize_servo(target_angle, current_angle):
+    # 서보모터의 움직임을 안정화시키는 함수
+    if target_angle != current_angle:
+        angle_diff = target_angle - current_angle
+        step = int(angle_diff / abs(angle_diff)) * SERVO_STEP
+        new_angle = current_angle + step
+        new_angle = max(SERVO_MIN, min(SERVO_MAX, new_angle))
+        set_servo_angle(new_angle)
+        time.sleep(0.1)  # 안정화를 위해 잠시 대기
+
 try:
     while True:
         GPIO.wait_for_edge(pwm_pin_from_receiver_dc, GPIO.RISING)
@@ -66,20 +80,23 @@ try:
 
         if pulse_duration_servo != 0.0:
             pwm_value_servo = round(pulse_duration_servo * 1000000)  # PWM 값 변환 (마이크로초로 변환)
-
+            
             # 범위 확인
-            pwm_value_servo = max(900, min(2050, pwm_value_servo))
-            if 900 <= pwm_value_servo <= 1150:
-                set_servo_angle(0)
-            elif 1100 < pwm_value_servo <= 1250:
-                set_servo_angle(30)
-            elif 1300 <= pwm_value_servo <= 1450:
-                set_servo_angle(60)
-            elif 1500 <= pwm_value_servo <= 1650:
-                set_servo_angle(90)
-            elif 1800 <= pwm_value_servo <= 2050:
-                set_servo_angle(120)
-            print(f"PWM2 신호: {pwm_value_servo}")
+            pwm_value_servo = max(SERVO_MIN, min(SERVO_MAX, pwm_value_servo))
+            
+            # 목표 각도 설정
+            if 900 <= pwm_value_servo <= 1200:
+                target_angle = 0
+            elif 1250 < pwm_value_servo <= 1400:
+                target_angle = 30
+            elif 1450 <= pwm_value_servo <= 1600:
+                target_angle = 60
+            elif 1650 <= pwm_value_servo <= 1800:
+                target_angle = 90
+            elif 1850 <= pwm_value_servo <= 2050:
+                target_angle = 120
+            
+            stabilize_servo(target_angle, pwm_value_servo)
 
 except KeyboardInterrupt:
     pass
