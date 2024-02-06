@@ -11,67 +11,33 @@ SPEED_MIN = 1200
 SPEED_MAX = 1950
 SPEED_STEP = 10  # DC 모터 속도를 10씩 증가시키도록 변경
 
-SERVO_MIN = 900
-SERVO_MAX = 1950
-
-SERVO_ANGLES = {
-    (900, 1150): 0,
-    (1150, 1300): 30,
-    (1300, 1500): 60,
-    (1500, 1700): 90,
-    (1700, 1950): 120
-}
-
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-pins = [
-    pwm_pin_from_receiver_dc,
-    pwm_pin_from_receiver_servo,
-    motor_pwm_pin,
-    motor_in1_pin,
-    servo_pwm_pin
-]
-
-# GPIO 핀을 입력으로 설정
-for pin in pins:
-    GPIO.setup(pin, GPIO.IN)
-
-# GPIO 핀을 출력으로 설정
+GPIO.setup(pwm_pin_from_receiver_dc, GPIO.IN)
+GPIO.setup(pwm_pin_from_receiver_servo, GPIO.IN)
 GPIO.setup(motor_pwm_pin, GPIO.OUT)
 GPIO.setup(motor_in1_pin, GPIO.OUT)
 GPIO.setup(servo_pwm_pin, GPIO.OUT)
+GPIO.output(motor_in1_pin, GPIO.LOW)  # DC 모터를 A방향으로 설정
 
-# DC 모터 초기 설정
-GPIO.output(motor_in1_pin, GPIO.LOW)
-dc_motor_pwm = GPIO.PWM(motor_pwm_pin, 100)
+dc_motor_pwm = GPIO.PWM(motor_pwm_pin, 100)  # DC 모터 PWM 주파수를 100Hz로 설정
+servo_pwm = GPIO.PWM(servo_pwm_pin, 50)  # 서보 모터 PWM 주파수를 50Hz로 설정
 dc_motor_pwm.start(0)
-
-# 서보 모터 초기 설정
-servo_pwm = GPIO.PWM(servo_pwm_pin, 50)
 servo_pwm.start(0)
 
-speed_dc = 0  # 전역 변수로 속도 값 초기화
-
-# 서보 모터 각도 설정 함수 정의
-def set_servo_angle(angle):
-    duty = angle / 18 + 2
-    GPIO.output(servo_pwm_pin, True)
-    servo_pwm.ChangeDutyCycle(duty)
-    time.sleep(0.5)  # 서보 모터의 안정적인 움직임을 위한 추가 대기 시간
-    GPIO.output(servo_pwm_pin, False)
-    servo_pwm.ChangeDutyCycle(0)
-
-# DC 모터 제어 함수 정의
 def control_dc_motor(speed):
-    global speed_dc
     if speed == 0:
         dc_motor_pwm.ChangeDutyCycle(0)  # DC 모터 OFF
         print("PWM1 - DC 모터 OFF")
-        speed_dc = 0
     else:
         dc_motor_pwm.ChangeDutyCycle(speed)  # DC 모터 속도값 사용
-        speed_dc = speed
+        print(f"PWM1 - DC 모터 ON - 속도: {speed:.1f}%")
+
+def set_servo_angle(angle):
+    duty_cycle = angle / 18.0 + 2.5  # 각도에 따른 PWM 듀티 사이클 계산
+    servo_pwm.ChangeDutyCycle(duty_cycle)
+    print(f"PWM2 - 현재 서보모터 각도: {angle}도")
 
 try:
     while True:
@@ -107,10 +73,16 @@ try:
 
             # PWM2 신호 및 서보모터 각도 출력
             print(f"PWM2 신호: {pwm_value_servo}")
-            for (min_value, max_value), angle in SERVO_ANGLES.items():
-                if min_value <= pwm_value_servo <= max_value:
-                    set_servo_angle(angle)
-                    break
+            if 900 <= pwm_value_servo <= 1150:
+                set_servo_angle(0)
+            elif 1100 < pwm_value_servo <= 1250:
+                set_servo_angle(30)
+            elif 1300 <= pwm_value_servo <= 1450:
+                set_servo_angle(60)
+            elif 1500 <= pwm_value_servo <= 1650:
+                set_servo_angle(90)
+            elif 1800 <= pwm_value_servo <= 2050:
+                set_servo_angle(120)
 
 except KeyboardInterrupt:
     pass
