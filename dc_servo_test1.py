@@ -1,5 +1,5 @@
-import RPi.GPIO as GPIO
 import time
+import RPi.GPIO as GPIO
 
 pwm_pin_from_receiver_dc = 17  # DC 모터 PWM 신호를 읽을 GPIO 핀
 pwm_pin_from_receiver_servo = 23  # 서보 모터 PWM 신호를 읽을 GPIO 핀
@@ -81,7 +81,7 @@ try:
                 set_servo_angle(60)
             elif 1500 <= pwm_value_servo <= 1650:
                 set_servo_angle(90)
-            elif 1800 <= pwm_value_servo <= 2050:
+            elif 1800 <= pwm_value_servo <= 1950:
                 set_servo_angle(120)
 
 except KeyboardInterrupt:
