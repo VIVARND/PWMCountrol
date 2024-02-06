@@ -1,9 +1,6 @@
+#!/usr/bin/env python3
 import RPi.GPIO as GPIO
 import time
-
-# 현재 스크립트의 경로 출력
-script_path = os.path.realpath(__file__)
-print(f"현재 스크립트 경로: {script_path}")
 
 pwm_pin_from_receiver_dc = 17  # DC 모터 PWM 신호를 읽을 GPIO 핀
 pwm_pin_from_receiver_servo = 23  # 서보 모터 PWM 신호를 읽을 GPIO 핀
