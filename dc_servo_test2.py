@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import RPi.GPIO as GPIO
 import time
 
@@ -53,13 +52,10 @@ try:
             pwm_value_dc = round(pulse_duration_dc * 1000000)  # PWM 값 변환 (마이크로초로 변환)
             
             # 범위 확인
-            if SPEED_MIN <= pwm_value_dc <= SPEED_MAX:
-                speed_dc = (pwm_value_dc - SPEED_MIN) / (SPEED_MAX - SPEED_MIN) * 100  # 속도 계산 (0 ~ 100)
-                control_dc_motor(speed_dc)
-                print(f"PWM1 신호: {pwm_value_dc}, PWM1 - DC 모터 ON - 속도: {speed_dc:.1f}%")
-            else:
-                control_dc_motor(0)  # 범위 밖이면 모터 정지
-                print(f"PWM1 신호: {pwm_value_dc}, PWM1 - DC 모터 OFF (범위 밖)")
+            pwm_value_dc = max(SPEED_MIN, min(SPEED_MAX, pwm_value_dc))
+            speed_dc = (pwm_value_dc - SPEED_MIN) / (SPEED_MAX - SPEED_MIN) * 100  # 속도 계산 (0 ~ 100)
+            control_dc_motor(speed_dc)
+            print(f"PWM1 신호: {pwm_value_dc}, PWM1 - DC 모터 ON - 속도: {speed_dc:.1f}%")
 
         GPIO.wait_for_edge(pwm_pin_from_receiver_servo, GPIO.RISING)
         pulse_start_servo = time.time()
@@ -72,21 +68,18 @@ try:
             pwm_value_servo = round(pulse_duration_servo * 1000000)  # PWM 값 변환 (마이크로초로 변환)
 
             # 범위 확인
-            if 900 <= pwm_value_servo <= 2050:
-                if 900 <= pwm_value_servo <= 1200:
-                    set_servo_angle(0)
-                elif 1250 < pwm_value_servo <= 1400:
-                    set_servo_angle(30)
-                elif 1450 <= pwm_value_servo <= 1600:
-                    set_servo_angle(60)
-                elif 1650 <= pwm_value_servo <= 1800:
-                    set_servo_angle(90)
-                elif 1850 <= pwm_value_servo <= 2050:
-                    set_servo_angle(120)
-                print(f"PWM2 신호: {pwm_value_servo}")
-            else:
-                set_servo_angle(0)  # 범위 밖이면 서보 모터 정지
-                print(f"PWM2 신호: {pwm_value_servo}, PWM2 - 서보 모터 OFF (범위 밖)")
+            pwm_value_servo = max(900, min(2050, pwm_value_servo))
+            if 900 <= pwm_value_servo <= 1150:
+                set_servo_angle(0)
+            elif 1100 < pwm_value_servo <= 1250:
+                set_servo_angle(30)
+            elif 1300 <= pwm_value_servo <= 1450:
+                set_servo_angle(60)
+            elif 1500 <= pwm_value_servo <= 1650:
+                set_servo_angle(90)
+            elif 1800 <= pwm_value_servo <= 2050:
+                set_servo_angle(120)
+            print(f"PWM2 신호: {pwm_value_servo}")
 
 except KeyboardInterrupt:
     pass
