@@ -26,13 +26,10 @@ servo_pwm = GPIO.PWM(servo_pwm_pin, 50)  # 서보 모터 PWM 주파수를 50Hz�
 dc_motor_pwm.start(0)
 servo_pwm.start(0)
 
-def control_dc_motor(speed):
-    if speed == 0:
-        dc_motor_pwm.ChangeDutyCycle(0)  # DC 모터 OFF
-        print("PWM1 - DC 모터 OFF")
-    else:
-        dc_motor_pwm.ChangeDutyCycle(speed)  # DC 모터 속도값 사용
-        print(f"PWM1 - DC 모터 ON - 속도: {speed:.1f}%")
+def control_dc_motor(pwm_value):
+    speed = min(100, max(0, (pwm_value - SPEED_MIN) / (SPEED_MAX - SPEED_MIN) * 100))
+    dc_motor_pwm.ChangeDutyCycle(speed)  # DC 모터 속도값 사용
+    print(f"PWM1 - DC 모터 ON - 속도: {speed:.1f}%")
 
 def set_servo_angle(angle):
     duty_cycle = angle / 18.0 + 2.5  # 각도에 따른 PWM 듀티 사이클 계산
@@ -50,14 +47,13 @@ try:
 
         if pulse_duration_dc != 0.0:
             pwm_value_dc = round(pulse_duration_dc * 1000000)  # PWM 값 변환 (마이크로초로 변환)
-            speed_dc = min(100, max(0, (pwm_value_dc - SPEED_MIN) / (SPEED_MAX - SPEED_MIN) * 100))  # 속도 계산 (0 ~ 100)
 
             # PWM1 신호 및 DC 모터 상태 출력
             print(f"PWM1 신호: {pwm_value_dc}")
             if pwm_value_dc < SPEED_MIN:
                 control_dc_motor(0)  # 속도가 0인 경우 모터 정지
             elif pwm_value_dc <= SPEED_MAX:
-                control_dc_motor(speed_dc)
+                control_dc_motor(pwm_value_dc)
             else:
                 control_dc_motor(100)  # 최대 속도로 모터 동작
 
