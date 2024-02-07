@@ -26,6 +26,9 @@ GPIO.setup(RC_PIN, GPIO.IN)  # 입력 모드로 설정
 servo = ServoControl(SERVO_PIN)
 
 try:
+    angle = 0  # 초기 각도를 0도로 설정
+    servo.set_angle(angle)  # 초기 각도로 서보 모터 설정
+
     while True:
         # PWM 값 읽어오기
         channel_pulse_start = time.time()
@@ -61,7 +64,7 @@ try:
         else:
             print("서보 모터 멈춤")
 
-        time.sleep(0.5)  # 갱신 주기에 따라 조절
+        time.sleep(0.1)  # 갱신 주기에 따라 조절
 
 except KeyboardInterrupt:
     GPIO.cleanup()
