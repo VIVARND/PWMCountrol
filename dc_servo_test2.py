@@ -33,14 +33,13 @@ def control_dc_motor(speed):
         print(f"PWM1 - DC 모터 ON - 속도: {speed:.1f}%")
 
 def set_servo_angle(pwm_value_servo):
+    angle = 0  # 기본값 설정
     if SPEED_MIN_SERVO <= pwm_value_servo <= 1150:
         angle = 0
     elif 1300 <= pwm_value_servo <= 1550:
         angle = 50
     elif 1700 <= pwm_value_servo <= SPEED_MAX_SERVO:
         angle = 90
-    else:
-        stop_servo()  # 서보모터 정지
 
     duty_cycle = angle / 18.0 + 2.5  # 각도에 따른 PWM 듀티 사이클 계산
     servo_pwm.ChangeDutyCycle(duty_cycle)
