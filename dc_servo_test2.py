@@ -9,7 +9,7 @@ servo_pwm_pin = 24  # 서보 모터 PWM 핀
 SPEED_MIN_DC = 900
 SPEED_MAX_DC = 1200
 SPEED_MIN_SERVO = 900
-SPEED_MAX_SERVO = 1200
+SPEED_MAX_SERVO = 2000
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -34,13 +34,15 @@ def control_dc_motor(pwm_value_dc):
 
 def set_servo_angle(pwm_value_servo):
     if SPEED_MIN_SERVO <= pwm_value_servo <= SPEED_MAX_SERVO:
-        set_servo_angle(0)  # 0도
-    elif 1300 <= pwm_value_servo <= 1600:
-        set_servo_angle(50)  # 50도
-    elif 1800 <= pwm_value_servo <= 2100:
-        set_servo_angle(90)  # 90도
+        angle = (pwm_value_servo - SPEED_MIN_SERVO) / (SPEED_MAX_SERVO - SPEED_MIN_SERVO) * 90  # 0 ~ 90도 변환
+        set_servo_angle(angle)
     else:
         stop_servo()  # 서보모터 정지
+
+def set_servo_angle(angle):
+    duty_cycle = angle / 18.0 + 2.5  # 각도에 따른 PWM 듀티 사이클 계산
+    servo_pwm.ChangeDutyCycle(duty_cycle)
+    print(f"PWM2 - 현재 서보모터 각도: {angle:.1f}도")
 
 def stop_servo():
     servo_pwm.ChangeDutyCycle(0)  # PWM 신호를 0으로 설정 (서보 모터 정지)
