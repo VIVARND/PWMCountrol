@@ -45,7 +45,7 @@ try:
         # 범위에 따라 서보 모터 각도 설정
         if 900 <= pwm_value <= 1100:
             angle = 0  # 0도
-        elif 1300 <= pwm_value <= 1500:
+        elif 1300 <= pwm_value <= 1600:
             angle = 40  # 40도
         elif 1800 <= pwm_value <= 2100:
             angle = 90  # 90도
