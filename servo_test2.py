@@ -12,11 +12,16 @@ class ServoControl:
         GPIO.setup(self.pin, GPIO.OUT)
         self.servo_pwm = GPIO.PWM(self.pin, 50)  # PWM 주파수 50Hz
         self.servo_pwm.start(0)
+        self.current_angle = 0  # 현재 각도 변수 추가
 
     def set_angle(self, angle):
         duty_cycle = ((angle + 90) / 180.0) * 10 + 2  # 각도를 듀티 사이클로 변환
         self.servo_pwm.ChangeDutyCycle(duty_cycle)
         time.sleep(0.5)  # 안정화를 위해 잠시 대기
+        self.current_angle = angle  # 현재 각도 업데이트
+
+    def get_current_angle(self):
+        return self.current_angle  # 현재 각도 반환
 
 # GPIO 설정
 GPIO.setmode(GPIO.BCM)
