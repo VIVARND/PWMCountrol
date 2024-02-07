@@ -9,7 +9,7 @@ servo_pwm_pin = 24  # 서보 모터 PWM 핀
 SPEED_MIN_DC = 900
 SPEED_MAX_DC = 1200
 SPEED_MIN_SERVO = 900
-SPEED_MAX_SERVO = 1150
+SPEED_MAX_SERVO = 1200
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -35,9 +35,9 @@ def control_dc_motor(pwm_value_dc):
 def set_servo_angle(pwm_value_servo):
     if SPEED_MIN_SERVO <= pwm_value_servo <= SPEED_MAX_SERVO:
         set_servo_angle(0)  # 0도
-    elif 1300 <= pwm_value_servo <= 1550:
+    elif 1300 <= pwm_value_servo <= 1600:
         set_servo_angle(50)  # 50도
-    elif 1700 <= pwm_value_servo <= 2000:
+    elif 1800 <= pwm_value_servo <= 2100:
         set_servo_angle(90)  # 90도
     else:
         stop_servo()  # 서보모터 정지
