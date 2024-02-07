@@ -27,18 +27,28 @@ servo = ServoControl(SERVO_PIN)
 
 try:
     while True:
-        # 조종기 값 읽기
-        rc_value = # 여기에 조종기(T10J)의 PWM 신호를 읽는 코드를 추가
+        # 조종기 값 읽기 (RPi.GPIO를 사용하는 경우)
+        rc_value = GPIO.input(RC_PIN)
 
+        # 주파수와 각도 출력
+        print(f"Current PWM Value: {rc_value}")
+        
         # 범위에 따라 서보 모터 각도 설정
         if 900 <= rc_value <= 1100:
-            servo.set_angle(0)  # 0도
+            angle = 0  # 0도
         elif 1300 <= rc_value <= 1500:
-            servo.set_angle(40)  # 40도
+            angle = 40  # 40도
         elif 1800 <= rc_value <= 2100:
-            servo.set_angle(90)  # 90도
+            angle = 90  # 90도
         else:
-            servo.set_angle(0)  # 다른 값이면 0도
+            angle = 0  # 다른 값이면 0도
+        
+        servo.set_angle(angle)
+
+        # 각도 출력
+        print(f"Current Angle: {angle} degrees")
+
+        time.sleep(0.1)  # 갱신 주기에 따라 조절
 
 except KeyboardInterrupt:
     GPIO.cleanup()
