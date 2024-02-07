@@ -7,17 +7,14 @@ RC_PIN = 22   # 수신기의 PWM 신호를 받기 위한 GPIO 핀
 
 # PWM 신호를 읽어와 DC 모터를 제어하는 클래스
 class DCMotorControl:
-    def __init__(self, pin):
-        self.pin = pin
-        GPIO.setup(self.pin, GPIO.OUT)
-        self.dc_pwm = GPIO.PWM(self.pin, 50)  # PWM 주파수 50Hz
+    def __init__(self, pwm_pin):
+        self.pwm_pin = pwm_pin
+        GPIO.setup(self.pwm_pin, GPIO.OUT)
+        self.dc_pwm = GPIO.PWM(self.pwm_pin, 100)  # PWM 주파수 100Hz
         self.dc_pwm.start(0)
 
-    def turn_on(self):
-        self.dc_pwm.ChangeDutyCycle(100)  # 100% duty cycle (ON)
-
-    def turn_off(self):
-        self.dc_pwm.ChangeDutyCycle(0)    # 0% duty cycle (OFF)
+    def set_speed(self, speed):
+        self.dc_pwm.ChangeDutyCycle(speed)
 
 # GPIO 설정
 GPIO.setmode(GPIO.BCM)
@@ -43,13 +40,13 @@ try:
         # 현재 PWM 값과 상태 출력
         print(f"현재 PWM 값: {pwm_value:04d}")
         
-        # 범위에 따라 DC 모터 상태 제어
-        if 900 <= pwm_value <= 1200:
-            print("DC 모터 ON")
-            dc_motor.turn_on()
+        # 범위에 따라 DC 모터 속도 설정
+        if 900 <= pwm_value <= 1100:
+            print("DC 모터 속도 UP")
+            dc_motor.set_speed(100)  # 최대 속도 (100%)
         else:
-            print("DC 모터 OFF")
-            dc_motor.turn_off()
+            print("DC 모터 정지")
+            dc_motor.set_speed(0)    # 정지
 
         time.sleep(0.1)  # 갱신 주기에 따라 조절
 
