@@ -44,7 +44,7 @@ try:
         print(f"현재 PWM 값: {pwm_value:04d}")
         
         # 범위에 따라 DC 모터 상태 제어
-        if 900 <= pwm_value <= 1100:
+        if 900 <= pwm_value <= 1200:
             print("DC 모터 ON")
             dc_motor.turn_on()
         else:
