@@ -6,8 +6,8 @@ pwm_pin_from_receiver_servo = 23  # 서보 모터 PWM 신호를 읽을 GPIO 핀
 motor_pwm_pin = 18  # DC 모터 PWM 핀
 servo_pwm_pin = 24  # 서보 모터 PWM 핀
 
-SPEED_MIN_DC = 900
-SPEED_MAX_DC = 1200
+SPEED_MIN = 1200
+SPEED_MAX = 2000
 SPEED_MIN_SERVO = 900
 SPEED_MAX_SERVO = 2000
 
@@ -24,28 +24,30 @@ servo_pwm = GPIO.PWM(servo_pwm_pin, 50)  # 서보 모터 PWM 주파수를 50Hz�
 dc_motor_pwm.start(0)
 servo_pwm.start(0)
 
-def control_dc_motor(pwm_value_dc):
-    if SPEED_MIN_DC <= pwm_value_dc <= SPEED_MAX_DC:
-        dc_motor_pwm.ChangeDutyCycle(100)  # DC 모터 ON
-        print("PWM1 - DC 모터 ON")
-    else:
+def control_dc_motor(speed):
+    if speed == 0:
         dc_motor_pwm.ChangeDutyCycle(0)  # DC 모터 OFF
         print("PWM1 - DC 모터 OFF")
+    else:
+        dc_motor_pwm.ChangeDutyCycle(speed)  # DC 모터 속도값 사용
+        print(f"PWM1 - DC 모터 ON - 속도: {speed:.1f}%")
 
 def set_servo_angle(pwm_value_servo):
-    if SPEED_MIN_SERVO <= pwm_value_servo <= SPEED_MAX_SERVO:
-        angle = (pwm_value_servo - SPEED_MIN_SERVO) / (SPEED_MAX_SERVO - SPEED_MIN_SERVO) * 90  # 0 ~ 90도 변환
-        set_servo_angle(angle)
+    if SPEED_MIN_SERVO <= pwm_value_servo <= 1150:
+        angle = 0
+    elif 1300 <= pwm_value_servo <= 1550:
+        angle = 50
+    elif 1700 <= pwm_value_servo <= SPEED_MAX_SERVO:
+        angle = 90
     else:
         stop_servo()  # 서보모터 정지
 
-def set_servo_angle(angle):
     duty_cycle = angle / 18.0 + 2.5  # 각도에 따른 PWM 듀티 사이클 계산
     servo_pwm.ChangeDutyCycle(duty_cycle)
-    print(f"PWM2 - 현재 서보모터 각도: {angle:.1f}도")
+    print(f"PWM2 - 현재 서보모터 각도: {angle}도")
 
 def stop_servo():
-    servo_pwm.ChangeDutyCycle(0)  # PWM 신호를 0으로 설정 (서보 모터 정지)
+    servo_pwm.ChangeDutyCycle(0)
     print("PWM2 - 서보모터 정지")
 
 try:
@@ -59,10 +61,16 @@ try:
 
         if pulse_duration_dc != 0.0:
             pwm_value_dc = round(pulse_duration_dc * 1000000)  # PWM 값 변환 (마이크로초로 변환)
+            speed_dc = min(100, max(0, (pwm_value_dc - SPEED_MIN) / (SPEED_MAX - SPEED_MIN) * 100))  # 속도 계산 (0 ~ 100)
 
             # PWM1 신호 및 DC 모터 상태 출력
             print(f"PWM1 신호: {pwm_value_dc}")
-            control_dc_motor(pwm_value_dc)
+            if pwm_value_dc < SPEED_MIN:
+                control_dc_motor(0)  # 속도가 0인 경우 모터 정지
+            elif pwm_value_dc <= SPEED_MAX:
+                control_dc_motor(speed_dc)
+            else:
+                control_dc_motor(100)  # 최대 속도로 모터 동작
 
         GPIO.wait_for_edge(pwm_pin_from_receiver_servo, GPIO.RISING)
         pulse_start_servo = time.time()
