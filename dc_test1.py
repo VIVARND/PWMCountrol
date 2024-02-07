@@ -6,6 +6,7 @@ MOTOR_PIN = 27  # 내장형 DC 모터를 제어하기 위한 GPIO 핀
 RC_PIN = 22   # 수신기의 PWM 신호를 받기 위한 GPIO 핀
 
 # GPIO 설정
+GPIO.setwarnings(False)  # 경고 끄기
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(MOTOR_PIN, GPIO.OUT)
 GPIO.setup(RC_PIN, GPIO.IN)  # 수신기의 PWM 신호를 입력으로 설정
