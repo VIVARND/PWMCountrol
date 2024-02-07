@@ -12,16 +12,11 @@ class ServoControl:
         GPIO.setup(self.pin, GPIO.OUT)
         self.servo_pwm = GPIO.PWM(self.pin, 50)  # PWM 주파수 50Hz
         self.servo_pwm.start(0)
-        self.current_angle = 0  # 현재 각도 변수 추가
 
     def set_angle(self, angle):
         duty_cycle = ((angle + 90) / 180.0) * 10 + 2  # 각도를 듀티 사이클로 변환
         self.servo_pwm.ChangeDutyCycle(duty_cycle)
         time.sleep(0.5)  # 안정화를 위해 잠시 대기
-        self.current_angle = angle  # 현재 각도 업데이트
-
-    def get_current_angle(self):
-        return self.current_angle  # 현재 각도 반환
 
 # GPIO 설정
 GPIO.setmode(GPIO.BCM)
@@ -29,10 +24,6 @@ GPIO.setup(RC_PIN, GPIO.IN)  # 입력 모드로 설정
 
 # 서보 모터 제어 객체 생성
 servo = ServoControl(SERVO_PIN)
-
-# 각도를 설정하는 함수
-def set_servo_angle(angle):
-    servo.set_angle(angle)
 
 try:
     while True:
@@ -53,18 +44,22 @@ try:
         
         # 범위에 따라 서보 모터 각도 설정
         if 900 <= pwm_value <= 1100:
-            set_servo_angle(0)
-        elif 1100 < pwm_value <= 1200:
-            set_servo_angle(30)
-        elif 1300 <= pwm_value <= 1400:
-            set_servo_angle(60)
-        elif 1500 <= pwm_value <= 1600:
-            set_servo_angle(90)
-        elif 1800 <= pwm_value <= 2000:
-            set_servo_angle(120)
+            angle = 0  # 0도
+        elif 1300 <= pwm_value <= 1500:
+            angle = 40  # 40도
+        elif 1800 <= pwm_value <= 2100:
+            angle = 90  # 90도
+        else:
+            angle = None  # 다른 값이면 None (멈춤)
+        
+        if angle is not None:
+            servo.set_angle(angle)
 
         # 각도 출력
-        print(f"현재 각도: {servo.get_current_angle()} 도")
+        if angle is not None:
+            print(f"현재 각도: {angle} 도")
+        else:
+            print("서보 모터 멈춤")
 
         time.sleep(0.5)  # 갱신 주기에 따라 조절
 
