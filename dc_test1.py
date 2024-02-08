@@ -5,8 +5,8 @@ import time
 GPIO.setwarnings(False)
 
 # GPIO 핀 설정
-RC_PIN = 23  # 수신기의 신호선에 연결
-DC_MOTOR_PIN = 25  # DC 모터의 신호선에 연결
+RC_PIN = 22  # 수신기의 신호선에 연결
+DC_MOTOR_PIN = 27  # DC 모터의 신호선에 연결
 
 # PWM 값을 읽어와 DC 모터를 제어하는 클래스
 class MotorControl:
