@@ -5,8 +5,8 @@ import time
 GPIO.setwarnings(False)
 
 # GPIO 핀 설정
-RC_PIN = 22  # 수신기의 신호선에 연결
-DC_MOTOR_PIN = 27  # DC 모터의 신호선에 연결
+RC_PIN = 23  # 수신기의 신호선에 연결
+DC_MOTOR_PIN = 25  # DC 모터의 신호선에 연결
 
 # PWM 값을 읽어와 DC 모터를 제어하는 클래스
 class MotorControl:
@@ -19,8 +19,13 @@ class MotorControl:
         # 범위에 따라 DC 모터를 ON 또는 OFF로 설정
         if 950 <= pwm_value <= 1100:
             GPIO.output(self.dc_motor_pin, GPIO.HIGH)  # DC 모터를 ON으로 설정
+            motor_state = "ON"
         else:
             GPIO.output(self.dc_motor_pin, GPIO.LOW)  # DC 모터를 OFF로 설정
+            motor_state = "OFF"
+
+        # DC 모터 상태 출력
+        print(f"DC 모터 상태: {motor_state}")
 
 # GPIO 설정
 GPIO.setmode(GPIO.BCM)
