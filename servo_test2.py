@@ -53,14 +53,16 @@ try:
             angle = 20  # 20도
         elif 1300 <= pwm_value <= 1415:
             angle = 40  # 40도
-        elif 1490 <= pwm_value <= 1605:
+        elif 1160 <= pwm_value <= 1260:
             angle = 60  # 60도
-        elif 1670 <= pwm_value <= 1785:
+        elif 1360 <= pwm_value <= 1460:
             angle = 80  # 80도
-        elif 1850 <= pwm_value <= 1965:
+        elif 1560 <= pwm_value <= 1660:
             angle = 100  # 100도
-        elif 2030 <= pwm_value <= 2145:
+        elif 1760 <= pwm_value <= 1860:
             angle = 120  # 120도
+        elif 1960 <= pwm_value <= 2060:
+            angle = 140  # 140도
         else:
             angle = None  # 다른 값이면 None (멈춤)
         
