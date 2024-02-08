@@ -49,13 +49,9 @@ try:
         # 범위에 따라 서보 모터 각도 설정
         if 950 <= pwm_value <= 1100:
             angle = 0  # 0도
-        elif 1200 <= pwm_value <= 1350:
-            angle = 50  # 30도
-        elif 1400 <= pwm_value <= 1550:
-            angle = 80  # 60도
-        elif 1600 <= pwm_value <= 1750:
-            angle = 110  # 90도
-        elif 1800 <= pwm_value <= 2060:
+        elif 1400 <= pwm_value <= 1600:
+            angle = 90  # 80도
+        elif 1800 <= pwm_value <= 2100:
             angle = 140  # 120도
         else:
             angle = None  # 다른 값이면 None (멈춤)
@@ -69,7 +65,7 @@ try:
         else:
             print("서보 모터 멈춤")
 
-        time.sleep(0.2)  # 갱신 주기에 따라 조절
+        time.sleep(0.1)  # 갱신 주기에 따라 조절
 
 except KeyboardInterrupt:
     GPIO.cleanup()
