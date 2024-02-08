@@ -47,26 +47,16 @@ try:
         print(f"현재 PWM 값: {pwm_value:04d}")
         
         # 범위에 따라 서보 모터 각도 설정
-        if 900 <= pwm_value <= 1100:
+        if 950 <= pwm_value <= 1150:
             angle = 0  # 0도
-        elif 1300 <= pwm_value <= 1500:
-            angle = 20  # 20도
-        elif 1800 <= pwm_value <= 2100:
-            angle = 40  # 40도
-        elif 2400 <= pwm_value <= 2600:
+        elif 1180 <= pwm_value <= 1380:
+            angle = 30  # 30도
+        elif 1410 <= pwm_value <= 1610:
             angle = 60  # 60도
-        elif 2900 <= pwm_value <= 3100:
-            angle = 80  # 80도
-        elif 3400 <= pwm_value <= 3600:
-            angle = 100  # 100도
-        elif 3900 <= pwm_value <= 4100:
+        elif 1640 <= pwm_value <= 1840:
+            angle = 90  # 90도
+        elif 1870 <= pwm_value <= 2070:
             angle = 120  # 120도
-        elif 4400 <= pwm_value <= 4600:
-            angle = 140  # 140도
-        elif 4900 <= pwm_value <= 5100:
-            angle = 160  # 160도
-        elif 5400 <= pwm_value <= 5600:
-            angle = 180  # 180도
         else:
             angle = None  # 다른 값이면 None (멈춤)
         
