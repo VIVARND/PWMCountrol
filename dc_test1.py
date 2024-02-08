@@ -4,7 +4,7 @@ import RPi.GPIO as GPIO
 pwm_pin_from_receiver_dc = 17  # DC 모터 PWM 신호를 읽을 GPIO 핀
 motor_pwm_pin = 18  # DC 모터 PWM 핀
 
-SPEED_MIN = 1200
+SPEED_MIN = 950
 SPEED_MAX = 1950
 SPEED_STEP = 10  # DC 모터 속도를 10씩 증가시키도록 변경
 
