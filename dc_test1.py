@@ -17,7 +17,7 @@ class MotorControl:
 
     def set_motor_state(self, pwm_value):
         # 범위에 따라 DC 모터를 ON 또는 OFF로 설정
-        if 950 <= pwm_value <= 1100:
+        if 1900 <= pwm_value <= 2200:
             GPIO.output(self.dc_motor_pin, GPIO.HIGH)  # DC 모터를 ON으로 설정
             motor_state = "ON"
         else:
@@ -54,7 +54,7 @@ try:
         # DC 모터 제어
         dc_motor_control.set_motor_state(pwm_value)
 
-        time.sleep(0.1)  # 갱신 주기에 따라 조절
+        time.sleep(0.2)  # 갱신 주기에 따라 조절
 
 except KeyboardInterrupt:
     GPIO.cleanup()
