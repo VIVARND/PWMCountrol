@@ -13,8 +13,8 @@ class ServoControl:
         self.servo_pwm = GPIO.PWM(self.pin, 50)  # PWM 주파수 50Hz
         self.servo_pwm.start(0)
 
-     def set_angle(self, angle):
-     # 각도를 듀티 사이클로 변환
+    def set_angle(self, angle):
+        # 각도를 듀티 사이클로 변환
         duty_cycle = (angle / 180.0) * 10 + 2
         self.servo_pwm.ChangeDutyCycle(duty_cycle)
         time.sleep(0.5)  # 안정화를 위해 잠시 대기
@@ -44,25 +44,25 @@ try:
         print(f"현재 PWM 값: {pwm_value:04d}")
         
         # 범위에 따라 서보 모터 각도 설정
-        if 940 <= pwm_value <= 1120:
+        if 940 <= pwm_value <= 1100:
             angle = 0  # 0도
-        elif 1160 <= pwm_value <= 1340:
+        elif 1120 <= pwm_value <= 1280:
             angle = 20  # 20도
-        elif 1380 <= pwm_value <= 1560:
+        elif 1300 <= pwm_value <= 1460:
             angle = 40  # 40도
-        elif 1600 <= pwm_value <= 1780:
+        elif 1480 <= pwm_value <= 1640:
             angle = 60  # 60도
-        elif 1820 <= pwm_value <= 2000:
+        elif 1660 <= pwm_value <= 1820:
             angle = 80  # 80도
-        elif 2040 <= pwm_value <= 2220:
+        elif 1840 <= pwm_value <= 2000:
             angle = 100  # 100도
-        elif 2260 <= pwm_value <= 2440:
+        elif 2020 <= pwm_value <= 2180:
             angle = 120  # 120도
-        elif 2480 <= pwm_value <= 2660:
+        elif 2200 <= pwm_value <= 2360:
             angle = 140  # 140도
-        elif 2700 <= pwm_value <= 2880:
+        elif 2380 <= pwm_value <= 2540:
             angle = 160  # 160도
-        elif 2920 <= pwm_value <= 3100:
+        elif 2560 <= pwm_value <= 2720:
             angle = 180  # 180도
         else:
             angle = None  # 다른 값이면 None (멈춤)
@@ -76,7 +76,7 @@ try:
         else:
             print("서보 모터 멈춤")
 
-        time.sleep(0.1)  # 갱신 주기에 따라 조절
+        time.sleep(0.5)  # 갱신 주기에 따라 조절
 
 except KeyboardInterrupt:
     GPIO.cleanup()
