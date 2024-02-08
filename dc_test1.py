@@ -1,35 +1,57 @@
-import RPi.GPIO as GPIO
 import time
+import RPi.GPIO as GPIO
 
-# GPIO 설정
+pwm_pin_from_receiver_dc = 17  # DC 모터 PWM 신호를 읽을 GPIO 핀
+motor_pwm_pin = 18  # DC 모터 PWM 핀
+
+SPEED_MIN = 1200
+SPEED_MAX = 1950
+SPEED_STEP = 10  # DC 모터 속도를 10씩 증가시키도록 변경
+
 GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
 
-# DC 모터 제어 핀 설정
-MOTOR_PIN = 22  # 예시, 모터의 신호선에 연결된 GPIO 핀 번호로 수정
+GPIO.setup(pwm_pin_from_receiver_dc, GPIO.IN)
+GPIO.setup(motor_pwm_pin, GPIO.OUT)
+GPIO.output(motor_pwm_pin, GPIO.LOW)  # DC 모터를 A방향으로 설정
 
-# GPIO 핀을 출력 모드로 설정
-GPIO.setup(MOTOR_PIN, GPIO.OUT)
+dc_motor_pwm = GPIO.PWM(motor_pwm_pin, 100)  # DC 모터 PWM 주파수를 100Hz로 설정
+dc_motor_pwm.start(0)
 
-def set_motor_direction(direction):
-    if direction == "forward":
-        GPIO.output(MOTOR_PIN, GPIO.HIGH)
-        print("DC 모터 정방향 동작 중...")
-    elif direction == "backward":
-        GPIO.output(MOTOR_PIN, GPIO.LOW)
-        print("DC 모터 역방향 동작 중...")
+def control_dc_motor(speed):
+    if speed == 0:
+        dc_motor_pwm.ChangeDutyCycle(0)  # DC 모터 OFF
+        print("PWM1 - DC 모터 OFF")
     else:
-        print("올바르지 않은 방향입니다.")
+        dc_motor_pwm.ChangeDutyCycle(speed)  # DC 모터 속도값 사용
+        print(f"PWM1 - DC 모터 ON - 속도: {speed:.1f}%")
 
 try:
     while True:
-        # DC 모터를 정방향으로 회전
-        set_motor_direction("forward")
-        time.sleep(2)
+        GPIO.wait_for_edge(pwm_pin_from_receiver_dc, GPIO.RISING)
+        pulse_start_dc = time.time()
+        GPIO.wait_for_edge(pwm_pin_from_receiver_dc, GPIO.FALLING)
+        pulse_end_dc = time.time()
 
-        # DC 모터를 역방향으로 회전
-        set_motor_direction("backward")
-        time.sleep(2)
+        pulse_duration_dc = pulse_end_dc - pulse_start_dc
+
+        if pulse_duration_dc != 0.0:
+            pwm_value_dc = round(pulse_duration_dc * 1000000)  # PWM 값 변환 (마이크로초로 변환)
+            speed_dc = min(100, max(0, (pwm_value_dc - SPEED_MIN) / (SPEED_MAX - SPEED_MIN) * 100))  # 속도 계산 (0 ~ 100)
+
+            # PWM1 신호 및 DC 모터 상태 출력
+            print(f"PWM1 신호: {pwm_value_dc}")
+            if pwm_value_dc < SPEED_MIN:
+                control_dc_motor(0)  # 속도가 0인 경우 모터 정지
+            elif pwm_value_dc <= SPEED_MAX:
+                control_dc_motor(speed_dc)
+            else:
+                control_dc_motor(100)  # 최대 속도로 모터 동작
 
 except KeyboardInterrupt:
-    # GPIO 정리
+    pass
+
+finally:
+    dc_motor_pwm.stop()
     GPIO.cleanup()
+    print("GPIO 정리 완료. 프로그램 종료.")
