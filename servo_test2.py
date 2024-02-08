@@ -64,7 +64,7 @@ try:
         else:
             print("서보 모터 멈춤")
 
-        time.sleep(0.5)  # 갱신 주기에 따라 조절
+        time.sleep(0.1)  # 갱신 주기에 따라 조절
 
 except KeyboardInterrupt:
     GPIO.cleanup()
