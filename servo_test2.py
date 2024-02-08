@@ -20,7 +20,7 @@ class ServoControl:
         # 각도를 듀티 사이클로 변환
         duty_cycle = (angle / 180.0) * 10 + 2
         self.servo_pwm.ChangeDutyCycle(duty_cycle)
-        time.sleep(0.2)  # 안정화를 위해 잠시 대기
+        time.sleep(0.3)  # 안정화를 위해 잠시 대기
 
 # GPIO 설정
 GPIO.setmode(GPIO.BCM)
@@ -75,7 +75,7 @@ try:
         else:
             print("서보 모터 멈춤")
 
-        time.sleep(0.1)  # 갱신 주기에 따라 조절
+        time.sleep(0.3)  # 갱신 주기에 따라 조절
 
 except KeyboardInterrupt:
     GPIO.cleanup()
