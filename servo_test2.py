@@ -50,13 +50,13 @@ try:
         if 950 <= pwm_value <= 1100:
             angle = 0  # 0도
         elif 1200 <= pwm_value <= 1350:
-            angle = 30  # 30도
+            angle = 50  # 30도
         elif 1400 <= pwm_value <= 1550:
-            angle = 60  # 60도
+            angle = 80  # 60도
         elif 1600 <= pwm_value <= 1750:
-            angle = 90  # 90도
+            angle = 110  # 90도
         elif 1800 <= pwm_value <= 2060:
-            angle = 120  # 120도
+            angle = 140  # 120도
         else:
             angle = None  # 다른 값이면 None (멈춤)
         
@@ -69,7 +69,7 @@ try:
         else:
             print("서보 모터 멈춤")
 
-        time.sleep(0.3)  # 갱신 주기에 따라 조절
+        time.sleep(0.2)  # 갱신 주기에 따라 조절
 
 except KeyboardInterrupt:
     GPIO.cleanup()
