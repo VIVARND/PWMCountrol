@@ -1,30 +1,27 @@
-import RPi.GPIO as GPIO
 import time
+import RPi.GPIO as GPIO
 
-# GPIO 설정 경고 비활성화
-GPIO.setwarnings(False)
+pwm_pin = 18  # PWM 신호를 읽을 GPIO 핀 (라즈베리파이 3B/3B+/4B의 경우 GPIO18)
 
-# GPIO 핀 설정
-DC_MOTOR_PWM_PIN = 18  # DC 모터의 PWM 신호선에 연결
+def pwm_callback(channel):
+    pulse_start = time.time()
+    while GPIO.input(channel) == GPIO.HIGH:
+        pulse_end = time.time()
+    pulse_duration = pulse_end - pulse_start
+    print("채널 10 PWM 값:", pulse_duration)
 
-# GPIO 설정
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(DC_MOTOR_PWM_PIN, GPIO.OUT)
+GPIO.setup(pwm_pin, GPIO.IN)
 
-# PWM 객체 생성
-motor_pwm = GPIO.PWM(DC_MOTOR_PWM_PIN, 100)  # PWM 주파수 100Hz
-
-def operate_motor(speed):
-    motor_pwm.start(speed)
-    print(f"DC 모터 회전 중 (속도: {speed}%)")
+GPIO.add_event_detect(pwm_pin, GPIO.BOTH, callback=pwm_callback)
 
 try:
     while True:
-        # 사용자에게 속도를 입력받아 DC 모터 회전
-        speed = float(input("DC 모터 속도 (0~100%): "))
-        operate_motor(speed)
-        time.sleep(2)  # 2초 동안 회전
+        time.sleep(0.1)  # 주기적으로 PWM 값을 확인하는 주기를 늦추었습니다.
 
 except KeyboardInterrupt:
-    motor_pwm.stop()
+    pass
+
+finally:
     GPIO.cleanup()
+    print("GPIO 정리 완료. 프로그램 종료.")
