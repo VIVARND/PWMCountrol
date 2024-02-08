@@ -1,6 +1,9 @@
 import RPi.GPIO as GPIO
 import time
 
+# GPIO 설정 경고 비활성화
+GPIO.setwarnings(False)
+
 # GPIO 핀 설정
 RC_PIN = 23  # 수신기의 신호선에 연결
 SERVO_PIN = 24  # 서보 모터의 신호선에 연결
@@ -44,25 +47,25 @@ try:
         print(f"현재 PWM 값: {pwm_value:04d}")
         
         # 범위에 따라 서보 모터 각도 설정
-        if 940 <= pwm_value <= 1100:
+        if 900 <= pwm_value <= 1100:
             angle = 0  # 0도
-        elif 1120 <= pwm_value <= 1280:
+        elif 1300 <= pwm_value <= 1500:
             angle = 20  # 20도
-        elif 1300 <= pwm_value <= 1460:
+        elif 1800 <= pwm_value <= 2100:
             angle = 40  # 40도
-        elif 1480 <= pwm_value <= 1640:
+        elif 2400 <= pwm_value <= 2600:
             angle = 60  # 60도
-        elif 1660 <= pwm_value <= 1820:
+        elif 2900 <= pwm_value <= 3100:
             angle = 80  # 80도
-        elif 1840 <= pwm_value <= 2000:
+        elif 3400 <= pwm_value <= 3600:
             angle = 100  # 100도
-        elif 2020 <= pwm_value <= 2180:
+        elif 3900 <= pwm_value <= 4100:
             angle = 120  # 120도
-        elif 2200 <= pwm_value <= 2360:
+        elif 4400 <= pwm_value <= 4600:
             angle = 140  # 140도
-        elif 2380 <= pwm_value <= 2540:
+        elif 4900 <= pwm_value <= 5100:
             angle = 160  # 160도
-        elif 2560 <= pwm_value <= 2720:
+        elif 5400 <= pwm_value <= 5600:
             angle = 180  # 180도
         else:
             angle = None  # 다른 값이면 None (멈춤)
