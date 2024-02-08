@@ -1,8 +1,9 @@
 import time
 import RPi.GPIO as GPIO
 
-pwm_pin_from_receiver_dc = 17  # DC 모터 PWM 신호를 읽을 GPIO 핀
-motor_pwm_pin = 18  # DC 모터 PWM 핀
+pwm_pin_from_receiver_dc = 12  # DC 모터 PWM 신호를 읽을 GPIO 핀
+dir_pin_from_receiver_dc = 27  # DC 모터 DIR 신호를 읽을 GPIO 핀
+motor_pwm_pin = 13  # DC 모터 PWM 핀
 
 SPEED_MIN = 950
 SPEED_MAX = 2060
@@ -12,17 +13,19 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 GPIO.setup(pwm_pin_from_receiver_dc, GPIO.IN)
+GPIO.setup(dir_pin_from_receiver_dc, GPIO.IN)
 GPIO.setup(motor_pwm_pin, GPIO.OUT)
 GPIO.output(motor_pwm_pin, GPIO.LOW)  # DC 모터를 A방향으로 설정
 
 dc_motor_pwm = GPIO.PWM(motor_pwm_pin, 100)  # DC 모터 PWM 주파수를 100Hz로 설정
 dc_motor_pwm.start(0)
 
-def control_dc_motor(speed):
+def control_dc_motor(speed, direction):
     if speed == 0:
         dc_motor_pwm.ChangeDutyCycle(0)  # DC 모터 OFF
         print("PWM1 - DC 모터 OFF")
     else:
+        GPIO.output(dir_pin_from_receiver_dc, direction)  # 방향 설정
         dc_motor_pwm.ChangeDutyCycle(speed)  # DC 모터 속도값 사용
         print(f"PWM1 - DC 모터 ON - 속도: {speed:.1f}%")
 
@@ -39,14 +42,12 @@ try:
             pwm_value_dc = round(pulse_duration_dc * 1000000)  # PWM 값 변환 (마이크로초로 변환)
             speed_dc = min(100, max(0, (pwm_value_dc - SPEED_MIN) / (SPEED_MAX - SPEED_MIN) * 100))  # 속도 계산 (0 ~ 100)
 
+            # 방향 설정 (예: DC 모터의 경우 0 또는 1로 설정)
+            direction_dc = GPIO.input(dir_pin_from_receiver_dc)
+
             # PWM1 신호 및 DC 모터 상태 출력
             print(f"PWM1 신호: {pwm_value_dc}")
-            if pwm_value_dc < SPEED_MIN:
-                control_dc_motor(0)  # 속도가 0인 경우 모터 정지
-            elif pwm_value_dc <= SPEED_MAX:
-                control_dc_motor(speed_dc)
-            else:
-                control_dc_motor(100)  # 최대 속도로 모터 동작
+            control_dc_motor(speed_dc, direction_dc)
 
 except KeyboardInterrupt:
     pass
