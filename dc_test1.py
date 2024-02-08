@@ -15,6 +15,8 @@ GPIO.setwarnings(False)
 GPIO.setup(pwm_pin_from_receiver_dc, GPIO.IN)
 GPIO.setup(dir_pin_from_receiver_dc, GPIO.IN)
 GPIO.setup(motor_pwm_pin, GPIO.OUT)
+GPIO.setup(dir_pin_from_receiver_dc, GPIO.OUT)  # 추가된 부분
+
 GPIO.output(motor_pwm_pin, GPIO.LOW)  # DC 모터를 A방향으로 설정
 
 dc_motor_pwm = GPIO.PWM(motor_pwm_pin, 100)  # DC 모터 PWM 주파수를 100Hz로 설정
