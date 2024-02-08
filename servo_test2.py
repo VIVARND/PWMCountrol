@@ -22,10 +22,6 @@ class ServoControl:
         self.servo_pwm.ChangeDutyCycle(duty_cycle)
         time.sleep(0.5)  # 안정화를 위해 잠시 대기
 
-# 범위 제한 함수
-def constrain(value, min_val, max_val):
-    return max(min(value, max_val), min_val)
-
 # GPIO 설정
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(RC_PIN, GPIO.IN)  # 입력 모드로 설정
@@ -51,9 +47,20 @@ try:
         print(f"현재 PWM 값: {pwm_value:04d}")
         
         # 범위에 따라 서보 모터 각도 설정
-        if 950 <= pwm_value <= 2060:
-            angle = round((pwm_value - 950) / 115) * 20  # 9개 구간, 20도씩 움직임
-            angle = constrain(angle, 0, 180)  # 0에서 180도로 제한
+        if 950 <= pwm_value <= 1055:
+            angle = 0  # 0도
+        elif 1120 <= pwm_value <= 1235:
+            angle = 20  # 20도
+        elif 1300 <= pwm_value <= 1415:
+            angle = 40  # 40도
+        elif 1490 <= pwm_value <= 1605:
+            angle = 60  # 60도
+        elif 1670 <= pwm_value <= 1785:
+            angle = 80  # 80도
+        elif 1850 <= pwm_value <= 1965:
+            angle = 100  # 100도
+        elif 2030 <= pwm_value <= 2145:
+            angle = 120  # 120도
         else:
             angle = None  # 다른 값이면 None (멈춤)
         
@@ -66,7 +73,7 @@ try:
         else:
             print("서보 모터 멈춤")
 
-        time.sleep(0.1)  # 갱신 주기에 따라 조절
+        time.sleep(0.5)  # 갱신 주기에 따라 조절
 
 except KeyboardInterrupt:
     GPIO.cleanup()
