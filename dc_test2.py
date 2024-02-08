@@ -1,60 +1,60 @@
 import RPi.GPIO as GPIO
 import time
 
-pwm_pin_from_receiver = 17  # R3008SB의 PWM 신호를 읽을 GPIO 핀
-motor_pwm_pin = 18  # DC 모터 PWM 핀
-motor_in1_pin = 22  # DC  모터 제어 DIR 핀
-
-SPEED_MIN = 1200
-SPEED_MAX = 2000
-SPEED_STEP = 10  # 속도를 10씩 증가시키도록 변경
-
-GPIO.setmode(GPIO.BCM)
+# GPIO 설정 경고 비활성화
 GPIO.setwarnings(False)
 
-GPIO.setup(pwm_pin_from_receiver, GPIO.IN)
-GPIO.setup(motor_pwm_pin, GPIO.OUT)
-GPIO.setup(motor_in1_pin, GPIO.OUT)
-GPIO.output(motor_in1_pin, GPIO.LOW)  # 모터를 A방향으로 설정
+# GPIO 핀 설정
+RC_PIN = 22  # 수신기의 신호선에 연결
+DC_MOTOR_PIN = 27  # DC 모터의 신호선에 연결
 
-pwm = GPIO.PWM(motor_pwm_pin, 100)  # PWM 주파수를 100Hz로 설정
-pwm.start(0)
+# PWM 값을 읽어와 DC 모터를 제어하는 클래스
+class MotorControl:
+    def __init__(self, dc_motor_pin):
+        self.dc_motor_pin = dc_motor_pin
+        GPIO.setup(self.dc_motor_pin, GPIO.OUT)
+        GPIO.output(self.dc_motor_pin, GPIO.LOW)
 
-def control_dc_motor(speed):
-    if speed == 0:
-        pwm.ChangeDutyCycle(0)  # 모터 OFF
-        print("DC 모터 OFF")
-    else:
-        pwm.ChangeDutyCycle(speed)  # 속도값 사용
-        print(f"DC 모터 ON - 속도: {speed:.1f}%")
+    def set_motor_state(self, pwm_value):
+        # 범위에 따라 DC 모터를 ON 또는 OFF로 설정
+        if 1900 <= pwm_value <= 2200:
+            GPIO.output(self.dc_motor_pin, GPIO.HIGH)  # DC 모터를 ON으로 설정
+            motor_state = "ON"
+        else:
+            GPIO.output(self.dc_motor_pin, GPIO.LOW)  # DC 모터를 OFF로 설정
+            motor_state = "OFF"
+
+        # DC 모터 상태 출력
+        print(f"DC 모터 상태: {motor_state}")
+
+# GPIO 설정
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(RC_PIN, GPIO.IN)  # 입력 모드로 설정
+
+# DC 모터 제어 객체 생성
+dc_motor_control = MotorControl(DC_MOTOR_PIN)
 
 try:
     while True:
-        GPIO.wait_for_edge(pwm_pin_from_receiver, GPIO.RISING)
+        # PWM 값 읽어오기
+        channel_pulse_start = time.time()
+        GPIO.wait_for_edge(RC_PIN, GPIO.RISING)
         pulse_start = time.time()
-        GPIO.wait_for_edge(pwm_pin_from_receiver, GPIO.FALLING)
+
+        GPIO.wait_for_edge(RC_PIN, GPIO.FALLING)
         pulse_end = time.time()
-        
+
         pulse_duration = pulse_end - pulse_start
 
-        if pulse_duration != 0.0:
-            pwm_value = round(pulse_duration * 1000000)  # PWM 값 변환 (마이크로초로 변환)
-            speed = min(100, max(0, (pwm_value - SPEED_MIN) / (SPEED_MAX - SPEED_MIN) * 100))  # 속도 계산 (0 ~ 100)
+        pwm_value = round(pulse_duration * 1000000)
+        
+        # PWM 값 출력
+        print(f"현재 PWM 값: {pwm_value:04d}")
+        
+        # DC 모터 제어
+        dc_motor_control.set_motor_state(pwm_value)
 
-            print("PWM 값:", pwm_value)
-
-            # PWM 값에 따라 DC 모터 상태 결정
-            if pwm_value < SPEED_MIN:
-                control_dc_motor(0)  # 속도가 0인 경우 모터 정지
-            elif pwm_value <= SPEED_MAX:
-                control_dc_motor(speed)
-            else:
-                control_dc_motor(100)  # 최대 속도로 모터 동작
+        time.sleep(0.2)  # 갱신 주기에 따라 조절
 
 except KeyboardInterrupt:
-    pass
-
-finally:
-    pwm.stop()
     GPIO.cleanup()
-    print("GPIO 정리 완료. 프로그램 종료.")
