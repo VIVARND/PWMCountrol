@@ -26,9 +26,6 @@ GPIO.setup(RC_PIN, GPIO.IN)  # 입력 모드로 설정
 servo = ServoControl(SERVO_PIN)
 
 try:
-    angle = 0  # 초기 각도를 0도로 설정
-    servo.set_angle(angle)  # 초기 각도로 서보 모터 설정
-
     while True:
         # PWM 값 읽어오기
         channel_pulse_start = time.time()
@@ -46,11 +43,25 @@ try:
         print(f"현재 PWM 값: {pwm_value:04d}")
         
         # 범위에 따라 서보 모터 각도 설정
-        if 900 <= pwm_value <= 1100:
+        if 940 <= pwm_value <= 1040:
             angle = 0  # 0도
-        elif 1300 <= pwm_value <= 1500:
+        elif 1150 <= pwm_value <= 1250:
+            angle = 10  # 10도
+        elif 1260 <= pwm_value <= 1360:
+            angle = 20  # 20도
+        elif 1470 <= pwm_value <= 1570:
+            angle = 30  # 30도
+        elif 1680 <= pwm_value <= 1780:
             angle = 40  # 40도
-        elif 1800 <= pwm_value <= 2100:
+        elif 1890 <= pwm_value <= 1990:
+            angle = 50  # 50도
+        elif 2000 <= pwm_value <= 2100:
+            angle = 60  # 60도
+        elif 2200 <= pwm_value <= 2300:
+            angle = 70  # 70도
+        elif 2410 <= pwm_value <= 2510:
+            angle = 80  # 80도
+        elif 2620 <= pwm_value <= 2720:
             angle = 90  # 90도
         else:
             angle = None  # 다른 값이면 None (멈춤)
