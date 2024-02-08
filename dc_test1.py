@@ -10,26 +10,16 @@ DC_MOTOR_PIN = 18  # DC 모터의 신호선에 연결
 # GPIO 핀을 출력 모드로 설정
 GPIO.setup(DC_MOTOR_PIN, GPIO.OUT)
 
-def operate_motor():
-    try:
-        while True:
-            user_input = input("DC 모터를 켜려면 'on', 끄려면 'off'를 입력하세요 (종료하려면 'exit'): ")
-            
-            if user_input.lower() == 'on':
-                GPIO.output(DC_MOTOR_PIN, GPIO.HIGH)  # DC 모터를 ON으로 설정
-                print("DC 모터 켜짐")
-            elif user_input.lower() == 'off':
-                GPIO.output(DC_MOTOR_PIN, GPIO.LOW)  # DC 모터를 OFF로 설정
-                print("DC 모터 꺼짐")
-            elif user_input.lower() == 'exit':
-                break
-            else:
-                print("올바른 명령을 입력하세요.")
+try:
+    while True:
+        # DC 모터를 ON 상태로 설정
+        GPIO.output(DC_MOTOR_PIN, GPIO.HIGH)
+        
+        # 현재 GPIO 핀의 상태를 읽어와 출력
+        motor_signal = GPIO.input(DC_MOTOR_PIN)
+        print(f"DC 모터 신호 값: {motor_signal}")
 
-    except KeyboardInterrupt:
-        pass
-    finally:
-        GPIO.cleanup()
+        time.sleep(1)  # 1초 동안 대기
 
-# DC 모터 동작 시작
-operate_motor()
+except KeyboardInterrupt:
+    GPIO.cleanup()
