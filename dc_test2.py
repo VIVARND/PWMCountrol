@@ -4,9 +4,9 @@ import time
 # GPIO 설정
 GPIO.setmode(GPIO.BCM)
 
-# PWM 입력 신호를 받을 GPIO 핀 설정 (라즈베리 파이에 연결된 GPIO 핀 번호로 수정)
+# 수신기 신호를 받을 GPIO 핀 
 RC_PIN = 27
-# DC 모터 제어 핀 설정 (라즈베리 파이에 연결된 GPIO 핀 번호로 수정)
+# DC 모터 제어 핀 설정 
 DC_MOTOR_PIN = 22
 
 # GPIO 핀을 입력 모드로 설정
@@ -42,9 +42,9 @@ try:
         # PWM 값 출력
         print(f"현재 PWM 값: {pwm_value:04d}")
 
-        # PWM 값이 일정 범위 내에 있는지 확인
+        # PWM 값이 일정 범위 내에 확인
         if PWM_MIN <= pwm_value <= PWM_MAX:
-            # PWM 값을 모터 속도로 변환 (여기에서는 예시로 직접 매핑)
+            # PWM 값을 모터 속도로 변환
             speed = map_value(pwm_value, PWM_MIN, PWM_MAX, 0, 100)
             dc_motor_pwm.ChangeDutyCycle(speed)
             print(f"DC 모터 속도: {speed:.0f}%")
