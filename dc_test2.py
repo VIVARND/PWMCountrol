@@ -16,8 +16,6 @@ GPIO.setup(RC_PIN, GPIO.IN)
 PWM_MIN = 1000
 PWM_MAX = 2100
 
-
-
 # GPIO 핀을 출력 모드로 설정
 GPIO.setup(DC_MOTOR_PIN, GPIO.OUT)
 
@@ -49,7 +47,7 @@ try:
             # PWM 값을 모터 속도로 변환 (여기에서는 예시로 직접 매핑)
             speed = map_value(pwm_value, PWM_MIN, PWM_MAX, 0, 100)
             dc_motor_pwm.ChangeDutyCycle(speed)
-            print(f"DC 모터 속도: {speed}%")
+            print(f"DC 모터 속도: {speed:.0f}%")
         else:
             # PWM 값이 범위를 벗어나면 모터 정지
             dc_motor_pwm.ChangeDutyCycle(0)
