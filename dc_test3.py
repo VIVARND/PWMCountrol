@@ -13,20 +13,6 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(RC_PIN, GPIO.IN)  # 입력 모드로 설정
 GPIO.setup(DC_MOTOR_PIN, GPIO.OUT)  # 출력 모드로 설정
 
-
-class MotorControl:
-    def __init__(self, pin):
-        self.pin = pin
-        GPIO.setup(self.pin, GPIO.OUT)
-        self.motor_pwm = GPIO.PWM(self.pin, 50)  # PWM 주파수 50Hz
-        self.motor_pwm.start(0)
-
-    def set_speed(self, speed):
-        # 속도를 듀티 사이클로 변환
-        duty_cycle = speed * 100 / 100  # PWM의 duty cycle은 0~100 범위
-        self.motor_pwm.ChangeDutyCycle(duty_cycle)
-
-
 # DC 모터 제어 함수
 def control_dc_motor(pwm_value):
     if 1800 <= pwm_value <= 2100:
