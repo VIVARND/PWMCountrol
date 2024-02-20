@@ -17,8 +17,10 @@ GPIO.setup(DC_MOTOR_PIN, GPIO.OUT)  # 출력 모드로 설정
 def control_dc_motor(pwm_value):
     if 1800 <= pwm_value <= 2100:
         GPIO.output(DC_MOTOR_PIN, GPIO.HIGH)  # 모터를 켬
+        return True
     else:
         GPIO.output(DC_MOTOR_PIN, GPIO.LOW)  # 모터를 끔
+        return False
 
 try:
     while True:
@@ -37,7 +39,13 @@ try:
         print(f"현재 PWM 값: {pwm_value:04d}")
 
         # DC 모터 제어
-        control_dc_motor(pwm_value)
+        motor_on = control_dc_motor(pwm_value)
+
+        # 모터 상태 출력
+        if motor_on:
+            print("DC 모터: ON")
+        else:
+            print("DC 모터: OFF")
 
         time.sleep(0.1)  # 갱신 주기에 따라 조절
 
