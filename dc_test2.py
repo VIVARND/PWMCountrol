@@ -7,7 +7,7 @@ GPIO.setmode(GPIO.BCM)
 # PWM 입력 신호를 받을 GPIO 핀 설정 (라즈베리 파이에 연결된 GPIO 핀 번호로 수정)
 RC_PIN = 27
 # DC 모터 제어 핀 설정 (라즈베리 파이에 연결된 GPIO 핀 번호로 수정)
-DC_MOTOR_PIN = 24
+DC_MOTOR_PIN = 22
 
 # GPIO 핀을 입력 모드로 설정
 GPIO.setup(RC_PIN, GPIO.IN)
