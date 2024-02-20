@@ -5,8 +5,8 @@ import time
 GPIO.setwarnings(False)
 
 # GPIO 핀 설정
-RC_PIN = 27  # 수신기의 신호선에 연결
-DC_MOTOR_PIN = 22  # DC 모터의 신호선에 연결
+RC_PIN = 19  # 수신기의 신호선에 연결
+DC_MOTOR_PIN = 13  # DC 모터의 신호선에 연결
 
 # GPIO 설정
 GPIO.setmode(GPIO.BCM)
