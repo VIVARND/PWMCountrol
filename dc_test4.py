@@ -15,12 +15,12 @@ GPIO.setup(DC_MOTOR_PIN, GPIO.OUT)  # 출력 모드로 설정
 
 # PWM 객체 생성
 dc_motor_pwm = GPIO.PWM(DC_MOTOR_PIN, 100)  # PWM 주파수 100Hz
-dc_motor_pwm.start(0)  # 듀티 사이클 0으로 초기화
+dc_motor_pwm.start(0)
 
 # DC 모터 제어 함수
 def control_dc_motor(pwm_value):
     if 1800 <= pwm_value <= 2100:
-        dc_motor_pwm.ChangeDutyCycle(50)  # PWM의 duty cycle은 0~100 범위
+        dc_motor_pwm.ChangeDutyCycle(75)  # PWM의 duty cycle은 0~100 범위
         return True
     else:
         dc_motor_pwm.ChangeDutyCycle(0)  # 모터를 끔
