@@ -27,12 +27,14 @@ try:
         pulse_duration = pulse_end - pulse_start
         pwm_value = round(pulse_duration * 1000000)
 
+        print(f"현재 PWM 값: {pwm_value:04d}")
+
         if 1800 <= pwm_value <= 2100:
             dc_motor_pwm.ChangeDutyCycle(100)  # 최대 속도로 설정
-            print("DC 모터 ON")
+            print("DC 모터 속도: 최대")
         else:
             dc_motor_pwm.ChangeDutyCycle(0)  # 모터 정지
-            print("DC 모터 OFF")
+            print("DC 모터 정지")
 
         time.sleep(0.1)
 
