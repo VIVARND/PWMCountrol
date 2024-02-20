@@ -31,10 +31,10 @@ try:
 
         if 1800 <= pwm_value <= 2100:
             dc_motor_pwm.ChangeDutyCycle(100)  # 최대 속도로 설정
-            print("DC 모터 속도: 최대")
+            print("DC 모터 ON")
         else:
             dc_motor_pwm.ChangeDutyCycle(0)  # 모터 정지
-            print("DC 모터 정지")
+            print("DC 모터 OFF")
 
         time.sleep(0.1)
 
