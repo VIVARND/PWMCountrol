@@ -16,7 +16,7 @@ GPIO.setup(DC_MOTOR_PIN, GPIO.OUT)  # 출력 모드로 설정
 # DC 모터 제어 함수
 def control_dc_motor(pwm_value):
     if 1800 <= pwm_value <= 2100:
-        dc_motor_pwm.ChangeDutyCycle(10)  # PWM의 duty cycle은 0~100 범위
+        dc_motor_pwm.ChangeDutyCycle(20)  # PWM의 duty cycle은 0~100 범위
         return True
     else:
         dc_motor_pwm.ChangeDutyCycle(0)  # 모터를 끔
