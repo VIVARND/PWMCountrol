@@ -6,7 +6,7 @@ GPIO.setwarnings(False)
 
 # GPIO 핀 설정
 RC_PIN = 17  # 수신기의 신호선에 연결
-SERVO_PIN = 27  # 서보 모터의 신호선에 연결
+SERVO_PIN = 18  # 서보 모터의 신호선에 연결
 
 # PWM 신호를 읽어와 서보 모터를 제어하는 클래스
 class ServoControl:
@@ -27,7 +27,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(RC_PIN, GPIO.IN)  # 입력 모드로 설정
 
 # 서보 모터 제어 객체 생성
-servo = ServoControl(SERVO_PIN)
+servo_manual = ServoControl(SERVO_PIN)
 
 try:
     while True:
@@ -57,7 +57,7 @@ try:
             angle = None  # 다른 값이면 None (멈춤)
         
         if angle is not None:
-            servo.set_angle(angle)
+            servo_manual.set_angle(angle)
 
         # 각도 출력
         if angle is not None:
