@@ -50,7 +50,7 @@ try:
         if 950 <= pwm_value <= 1100:
             angle = 0  # 0도
         elif 1400 <= pwm_value <= 1600:
-            angle = 90  # 80도
+            angle = 100  # 80도
         elif 1800 <= pwm_value <= 2100:
             angle = 140  # 120도
         else:
