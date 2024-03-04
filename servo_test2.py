@@ -5,8 +5,8 @@ import time
 GPIO.setwarnings(False)
 
 # GPIO 핀 설정
-RC_PIN = 19  # 수신기의 신호선에 연결
-SERVO_PIN = 13  # 서보 모터의 신호선에 연결
+RC_PIN = 17  # 수신기의 신호선에 연결
+SERVO_PIN = 18  # 서보 모터의 신호선에 연결
 
 # PWM 신호를 읽어와 서보 모터를 제어하는 클래스
 class ServoControl:
