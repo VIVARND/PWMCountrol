@@ -1,4 +1,4 @@
-import RPi.GPIO as GPIO  # RPi.GPIO 라이브러리를 GPIO로 임포트
+import RPi.GPIO as GPIO
 import time
 
 GPIO.setwarnings(False)  # GPIO 설정 경고를 비활성화.
@@ -31,20 +31,18 @@ servo_manual = ServoControl(SERVO_PIN)
 try:
     while True:
         # RC 수신기에서 PWM 값 읽기
-        channel_pulse_start = time.time()
-        GPIO.wait_for_edge(RC_PIN, GPIO.RISING)  # RC_PIN의 상승 에지를 기다립니다.
-        pulse_start = time.time()
-
+        pulse_start = time.time()  # 펄스 시작 시간을 기록합니다.
         GPIO.wait_for_edge(RC_PIN, GPIO.FALLING)  # RC_PIN의 하강 에지를 기다립니다.
-        pulse_end = time.time()
+        pulse_end = time.time()  # 펄스 종료 시간을 기록합니다.
 
         pulse_duration = pulse_end - pulse_start  # 펄스 지속 시간을 계산합니다.
 
-        pwm_value = round(pulse_duration * 1000000)  # PWM 값으로 변환합니다.
-        
+        # PWM 값으로 변환
+        pwm_value = int(pulse_duration * 1000000)  # 마이크로초 단위로 변환합니다.
+
         # PWM 값 출력
         print(f"현재 PWM 값: {pwm_value:04d}")
-        
+
         # PWM 값에 따라 서보 모터 각도 설정
         if 850 <= pwm_value <= 1100:
             angle = 0  # 0도
@@ -54,7 +52,7 @@ try:
             angle = 140  # 140도
         else:
             angle = None  # 그 외의 경우에는 None (서보 모터 멈춤)
-        
+
         if angle is not None:
             servo_manual.set_angle(angle)  # 서보 모터의 각도를 설정합니다.
 
@@ -67,4 +65,6 @@ try:
         time.sleep(0.1)  # 주기적으로 갱신합니다.
 
 except KeyboardInterrupt:
+    print("\n프로그램 종료")
+finally:
     GPIO.cleanup()  # KeyboardInterrupt 예외가 발생할 경우 GPIO를 정리합니다.
